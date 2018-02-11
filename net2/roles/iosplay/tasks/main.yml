@@ -1,0 +1,23 @@
+---
+# tasks file for roles/iosplay
+#
+
+- name: Gather facts (ops)
+  ios_facts:
+  when: ansible_network_os == 'ios'
+
+- name: config inteface on loopback1
+  ios_config:
+      lines:
+          - ip address 172.31.1.1 255.255.255.0
+      parents: interface Loopback1
+
+- name: Config ios device from file
+  ios_config:
+      src: ios_conf1.j2
+  register: result
+
+- name: debug, remove me
+  debug:
+      msg: "{{ result }}"
+
