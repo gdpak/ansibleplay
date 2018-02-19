@@ -1,0 +1,23 @@
+{
+    "interfaces": {
+        "interface": {
+            "Lookpack311": {
+                "config": {
+                    "name": "Loopback311"
+                }, 
+                "name": "Loopback311", 
+                    "ipv4": {
+                        "address": {
+                            "10.0.5.3": {
+                                "ip": "10.0.5.3", 
+                                "config": {
+                                    "ip": "10.0.5.3", 
+                                    "prefix-length": 28
+                                }
+                            }
+                         }
+                     }
+              }
+          } 
+     }
+}
