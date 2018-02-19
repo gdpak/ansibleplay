@@ -16,6 +16,13 @@
   ios_config:
       src: ios_conf1.j2
   register: result
+  tags: native_config
+
+- name: Config ios device from file
+  ios_config:
+      src_json: ios_conf1_json.j2
+  register: result
+  tags: json_config
 
 - name: debug, remove me
   debug:
