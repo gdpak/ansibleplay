@@ -1,0 +1,4 @@
+ansible_connection:  local                                                                 
+ansible_network_os: vyos                                                                          
+ansible_user: vagrant                                                                           
+ansible_ssh_pass: vagrant                                                                        

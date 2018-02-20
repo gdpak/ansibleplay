@@ -1,0 +1,17 @@
+---
+- hosts: leaf01
+  connection: network_cli
+  tasks:
+      - debug:
+          var: users
+      - vyos_config:
+          src: templates/users
+          save: yes
+  vars:
+      users:
+         - name: esa
+           level: admin
+           password: "!"
+         - name: vyos
+           level: admin
+           password: "abc"
