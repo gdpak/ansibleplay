@@ -3,3 +3,6 @@ an-veos-04.ansible.eng.rdu2.redhat.com ansible_ssh_user=ansible ansible_ssh_pass
 
 [ios]
 an-ios-02.ansible.eng.rdu2.redhat.com
+
+[vyos]
+an-vyos-02.ansible.eng.rdu2.redhat.com 
