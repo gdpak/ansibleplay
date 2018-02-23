@@ -1,5 +1,5 @@
 ---
-- hosts: leaf01
+- hosts: vyos_eng_node2
   connection: network_cli
   tasks:
       - debug:
@@ -11,7 +11,7 @@
       users:
          - name: esa
            level: admin
-           password: "!"
+           password: "abc"
          - name: vyos
            level: admin
            password: "abc"
