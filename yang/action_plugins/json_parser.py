@@ -48,10 +48,38 @@ class ActionModule(ActionBase):
         if not os.path.exists(src) and not os.path.isfile(src):
             raise AnsibleError("src is either missing or invalid")
 
-        json_config = self._loader.load_from_file(src)
+        with open(src, 'r') as f:
+           json_config = f.read()
+           j_obj = json.loads(json_config)
+           config_xml = self._json_to_xml(j_obj)
+           q(config_xml)
 
-        #self.ds.update(task_vars)
+        with open(output_file, 'w') as f:
+            f.write(config_xml)
         
-        q(json_config)
+        #self.ds.update(task_vars)
         result['ansible_facts'] = self.facts
         return result
+
+    def _json_to_xml(self, json_obj, line_padding=""):
+        result_list = []
+        
+        json_obj_type = type(json_obj)
+        
+        if json_obj_type is list:
+           for sub_elem in json_obj:
+               result_list.append(self._json_to_xml(sub_elem, line_padding))
+           return "\n".join(result_list)
+
+        if json_obj_type is dict:
+           for tag_name in json_obj:
+               sub_obj = json_obj[tag_name]
+               result_list.append("%s<%s>" % (line_padding, tag_name))
+               result_list.append(self._json_to_xml(sub_obj, "\t"+line_padding))
+               result_list.append("%s</%s>" % (line_padding, tag_name))
+
+           return "\n".join(result_list)
+
+        return "%s%s" % (line_padding, json_obj)
+
+
