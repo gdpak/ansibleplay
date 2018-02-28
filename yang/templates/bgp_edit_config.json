@@ -1,5 +1,5 @@
 {
- "bgp:bgp": {
+ "bgp": {
   "global": {
    "config": {
     "as": 65001
