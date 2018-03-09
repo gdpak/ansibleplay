@@ -1,8 +1,8 @@
-[leafs]
-an-veos-04.ansible.eng.rdu2.redhat.com ansible_ssh_user=ansible ansible_ssh_password=ansible
+[eos]
+eos02 ansible_host=eos02.example.net
 
 [ios]
-an-ios-02.ansible.eng.rdu2.redhat.com
+rtios ansible_host=ios02.example.net
 
 [vyos]
 an-vyos-02.ansible.eng.rdu2.redhat.com 

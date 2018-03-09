@@ -1,0 +1,20 @@
+---
+# tasks file for roles/iosplay
+#
+#
+- hosts: eos02
+  tasks:
+    - name: config inteface on loopback911
+      eos_config:
+          lines:
+              - ip address 119.31.1.1 255.255.255.255
+          parents: interface Loopback911
+          provider : "{{ eapi }}"
+      check_mode: 1
+      environment:
+         ANSIBLE_EOS_USE_SESSIONS: 0
+      register: result
+      
+    - debug:
+          msg: "{{ result }}"
+
