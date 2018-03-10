@@ -18,3 +18,17 @@
     - debug:
           msg: "{{ result }}"
 
+    - name: valid configuration in check mode + no config session
+      eos_config:
+         lines:
+             - ip address 119.31.1.1 255.255.255.255
+         parents: interface Loopback911
+      check_mode: 1
+      environment:
+        ANSIBLE_EOS_USE_SESSIONS: 0
+      register: result
+      tags: valid_config
+    
+    - assert:
+       that:
+       - "result.changed == true"

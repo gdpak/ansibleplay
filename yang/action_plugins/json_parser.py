@@ -54,7 +54,8 @@ class ActionModule(ActionBase):
 
         if not os.path.exists(src) and not os.path.isfile(src):
             raise AnsibleError("src is either missing or invalid")
-
+        
+        #json_config = self._loader.load_from_file(src)
         with open(src, 'r') as f:
            json_config = f.read()
            j_obj = json.loads(json_config, object_pairs_hook=OrderedDict)
@@ -80,8 +81,6 @@ class ActionModule(ActionBase):
         start_tag = "<config>\n"
         end_tag   = "\n%s</%s>" % (line_padding, "config")
         result_list = start_tag + result_list + end_tag
-        for i in range(0, 5):
-            q(result_list[i])
         return (result_list)
         
 
@@ -98,7 +97,6 @@ class ActionModule(ActionBase):
         #if json_obj_type is dict:
         if json_obj_type is collections.OrderedDict:
            for tag_name in json_obj:
-               q(tag_name)
                sub_obj = json_obj[tag_name]
                result_list.append("%s<%s>" % (line_padding, tag_name))
                result_list.append(self._json_to_xml(sub_obj, "\t"+line_padding))
