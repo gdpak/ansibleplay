@@ -1,0 +1,14 @@
+---
+# tasks file for roles/iosplay
+#
+#
+- hosts: iosxr01
+  tasks:
+    - name: collect facts
+      iosxr_facts:
+          gather_subset: all 
+      register: result
+      
+    - debug:
+          msg: "{{ result }}"
+
