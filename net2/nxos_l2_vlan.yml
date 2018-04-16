@@ -1,0 +1,37 @@
+---
+# tasks file for roles/iosplay
+#
+#
+- hosts: nxos01
+  tasks:
+    - name: check if vlan exists on switch 
+      nxos_command:
+          commands:
+              - command: "show vlan id 1"
+      register: result
+#failed_when: " 'not found' not in result.msg"
+      ignore_errors: yes
+      tags: show_vlan
+    
+    - debug : 
+          msg: " {{ result }} "
+
+    - name: add vlan 2 
+      nxos_vlan:
+          vlan_id: 2
+          name : "access_to_cs3"
+          state: present
+          admin_state: up
+      register: result
+      tags: vlan
+
+    - name: check is vlan already exist with different name
+      nxos_command:
+            commands:
+                - command: "show vlan id 2"
+      register: vlan_show
+
+        
+
+    - debug : 
+          msg: " {{ result }} "

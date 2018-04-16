@@ -1,0 +1,7 @@
+- hosts: nxos01
+  tasks:
+      block:
+          -name: pre-config-check
+           nxos_command:
+                commands: 
+                   - command: 
