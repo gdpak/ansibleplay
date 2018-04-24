@@ -1,0 +1,13 @@
+---
+# tasks file for roles/iosplay
+#
+#
+- hosts: iosxr01
+  tasks:
+    - name: get config from iosxr
+      iosxr_config:
+          backup: yes
+      register: result
+      
+    - debug:
+          msg: "{{ result }}"

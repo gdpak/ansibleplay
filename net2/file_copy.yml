@@ -1,0 +1,42 @@
+---
+# tasks file for roles/iosplay
+#
+#
+- hosts: iosxr01
+  tasks:
+    - name: copy file from controller to iosxr
+      net_file_put:
+          src: biox.cfg  
+      register: result
+      
+    - debug:
+          msg: "{{ result }}"
+
+- hosts: nxos01
+  tasks:
+    - name: copy file from controller to nxos + scp (Default)
+      net_file_put:
+          src: nxos_ansible.cfg  
+      register: result
+      
+    - debug:
+          msg: "{{ result }}"
+
+    - name: copy file from controller to nxos + dest specified
+      net_file_put:
+          src: nxos_ansible.cfg 
+          dest: 'bootflash:nxos_24_04_2018.cfg'
+      register: result
+      tags: dest
+      
+    - debug:
+          msg: "{{ result }}"
+
+    - name: copy large config file
+      net_file_put:
+          src: 50mb_config.cfg
+      register: result
+      tags: large
+      
+    - debug:
+          msg: "{{ result }}"
