@@ -1,0 +1,14 @@
+---
+- hosts: iosxr01
+  tasks:
+    - name: Confgure interface parameters using platform agnostic module                                                     
+      net_interface:                                                                                                         
+        name: GigabitEthernet0/0/0/2                                                                                         
+        description: test-interface                                                                                          
+        mtu: 512                                                                                                             
+        state: present                                                                                                       
+      register: result                                                                                                       
+                                                                                                                             
+    - assert:                                                                                                                
+        that:                                                                                                                
+          - '"interface GigabitEthernet0/0/0/2 mtu 512" in result.commands'        
