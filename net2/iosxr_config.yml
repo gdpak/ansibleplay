@@ -6,7 +6,7 @@
   tasks:
     - name: get config from iosxr
       iosxr_config:
-          backup: yes
+          src: iosxr1.cfg
       register: result
       
     - debug:
