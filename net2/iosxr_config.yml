@@ -4,10 +4,25 @@
 #
 - hosts: iosxr01
   tasks:
-    - name: get config from iosxr
+    - name: Initial configs
       iosxr_config:
-          src: iosxr1.cfg
+          src: init_prefix_set.j2
       register: result
       
     - debug:
           msg: "{{ result }}"
+
+    - name: Change prefix set
+      iosxr_config:
+          src: change_prefix_set.j2
+      register: result
+      
+    - debug:
+          msg: "{{ result }}"
+
+    - name: Change prefix set
+      iosxr_config:
+          src: change_prefix_set.j2
+      register: result
+      
+    - debug:
