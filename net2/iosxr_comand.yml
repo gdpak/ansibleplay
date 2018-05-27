@@ -1,0 +1,26 @@
+---
+# tasks file for roles/iosplay
+#
+#
+- hosts: iosxr01
+  tasks:
+    - name: Initial configs
+      iosxr_command:
+        commands:
+            - command : 'reload location all'
+              prompt   : 'Standby card not present or not Ready for failover\. Proceed\? \[confirm\]'
+              answer   : 'y'
+      tags: reload
+    - debug:
+          msg: "{{ result }}"
+
+    - name: copy
+      iosxr_command:
+        commands:
+            - command : 'copy running-config disk0:/a12.cfg'
+              prompt   : 'Destination file name \(control-c to abort\)\: \[\/a12.cfg\]\?'
+              answer   : 'a12.cfg'
+      tags: copy
+
+    - debug:
+          msg: "{{ result }}"

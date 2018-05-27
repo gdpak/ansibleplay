@@ -1,0 +1,28 @@
+---
+# tasks file for roles/iosplay
+#
+#
+- hosts: iosxr01
+  tasks:
+    - name: Initial as path config
+      iosxr_config:
+          src: init_as_path.j2
+      register: result
+      
+    - debug:
+          msg: "{{ result }}"
+
+    - name: Change as path config
+      iosxr_config:
+          src: change_as_path.j2
+      register: result
+      
+    - debug:
+          msg: "{{ result }}"
+
+    - name: replay same as path configs
+      iosxr_config:
+          src: change_as_path.j2
+      register: result
+      
+    - debug:

@@ -1,0 +1,10 @@
+---
+# Enable config on ios router to copy runing-configurations
+#
+
+- name: copy running config to flash
+  ios_command:
+    commands:
+        - command : 'copy running-config flash0:ansible.cfg'
+          prompt : 'Destination filename [ansible.cfg]?'
+          answer : 'ansible.cfg'
