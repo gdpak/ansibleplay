@@ -1,4 +1,4 @@
-ansible_connection: network_cli
+ansible_connection: local
 ansible_network_os: iosxr
 ansible_user: vagrant
 ansible_ssh_pass: vagrant
@@ -6,5 +6,11 @@ cli:
   host: "{{ ansible_host }}"                                                                                                     
   username:  root                                                                        
   password:  root                                                                  
-  transport: cli 
+  transport: cli
+netconf: 
+  host: "{{ ansible_host }}"                                                                                                     
+  username:  vagrant                                                                       
+  password:  vagrant                                                           
+  transport: netconf
+
 

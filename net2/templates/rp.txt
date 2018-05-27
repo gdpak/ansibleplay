@@ -1,0 +1,76 @@
+router bgp 65001
+ address-family ipv4 unicast
+ !
+ address-family ipv4 multicast
+ !
+ neighbor-group IBGP
+  remote-as 65001
+  update-source Loopback0
+  address-family ipv4 unicast
+  !
+ !
+ neighbor 11.7.1.2
+  use neighbor-group IBGP
+ !
+!
+route-policy static-to-bgp
+  if destination in cust-no-export then
+    apply cust2bgp
+    set community cust-no-export additive
+  elseif destination in cust-announce then
+    apply cust2bgp
+    set community cust-announce additive
+  elseif destination in cust-announce-backup then
+    apply cust2bgp
+    set local-preference 98
+    set weight 0
+    set community cust-announce additive
+  elseif destination in cust-no-export-backup then
+    apply cust2bgp
+    set local-preference 98
+    set weight 0
+    set community cust-no-export additive
+  else
+    drop
+  endif
+end-policy
+!
+prefix-set acme_DC_Internal
+  137.1.0.0/16,
+  137.1.16.0/24,
+  137.1.18.0/24,
+  137.1.20.0/24,
+  137.1.22.0/24,
+  137.1.23.0/24,
+  137.1.24.0/24,
+  137.1.29.0/24,
+  137.1.30.0/24,
+  137.1.31.0/24,
+  137.1.32.0/21,
+  137.1.40.0/22,
+  209.1.0.0/16
+end-set
+!
+prefix-set em1
+end-set
+!
+prefix-set em2
+end-set
+!
+as-path-set EBGP-PEER-AS16509-403-PERMIT-PATHS
+  ios-regex '^11164_8075_',
+  ios-regex '^11164_16509$',
+  ios-regex '^11164_16509_[0-9]+$',
+  ios-regex '^8075_',
+  ios-regex '^16509$',
+  ios-regex '^16509_[0-9]+$'
+end-set
+!
+community-set acme_tags
+  1520:*,
+  1521:*,
+  1525:*,
+  1523:*
+end-set
+!
+

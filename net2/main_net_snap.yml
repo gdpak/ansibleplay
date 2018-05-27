@@ -1,0 +1,5 @@
+---
+
+- hosts: ios02
+  tasks:
+     - include_tasks: copy_run_ios.yml

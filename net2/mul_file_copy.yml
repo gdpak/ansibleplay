@@ -1,0 +1,22 @@
+---
+# tasks file for roles/iosplay
+#
+#
+- hosts: [ios02 eos02 nxos01]
+  tasks:
+    - name: copy file from controller to devices
+      network_put:
+          src: aios.cfg
+      register: result
+    - debug:
+          msg: "{{ result }}"
+
+    - name: copy file from devices to controller
+      network_get:
+          src : aios.cfg
+          dest : 'aios_{{ ansible_host }}.cfg'
+      register: result
+      tags: get
+
+    - debug:
+          msg: "{{ result }}"
