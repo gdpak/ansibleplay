@@ -1,0 +1,13 @@
+---                                                                                                                                        
+# tasks file for roles/iosplay                                                                                                             
+#                                                                                                                                          
+#                                                                                                                                          
+- hosts: iosxr01                                                                                                                           
+  tasks:                                                                                                                                   
+    - name: Initial configs                                                                                                                
+      iosxr_config:                                                                                                                        
+          src: src_policy.j2                                                                                                       
+      register: result                                                                                                                     
+                                                                                                                                           
+    - debug:                                                                                                                               
+          msg: "{{ result }}"

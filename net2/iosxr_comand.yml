@@ -3,24 +3,27 @@
 #
 #
 - hosts: iosxr01
+  vars:
+      prefix_set: test_set
+      prefixes:
+        - '1.1.1.1/24, 
+           2.2.2.2/24,
+           3.3.3.3/24,
+           4.4.4.4/24,
+           6.6.6.6/24,
+           7.0.0.0/8'
+
   tasks:
-    - name: Initial configs
-      iosxr_command:
-        commands:
-            - command : 'reload location all'
-              prompt   : 'Standby card not present or not Ready for failover\. Proceed\? \[confirm\]'
-              answer   : 'y'
-      tags: reload
-    - debug:
-          msg: "{{ result }}"
+  - name: Configure Prefix-Set "{{ prefix_set }}"
+    iosxr_config:
+      lines:
+        - "{{ item }}"
+        - end-set
+      parents: prefix-set {{ prefix_set }}
+    with_items:
+        - "{{ prefixes }}"
 
-    - name: copy
-      iosxr_command:
-        commands:
-            - command : 'copy running-config disk0:/a12.cfg'
-              prompt   : 'Destination file name \(control-c to abort\)\: \[\/a12.cfg\]\?'
-              answer   : 'a12.cfg'
-      tags: copy
-
-    - debug:
-          msg: "{{ result }}"
+  - name: Configure Prefix-Set "{{ prefix_set }}" from file
+    iosxr_config:
+      src: iosxr_prefix_set.j2
+    tags: file
