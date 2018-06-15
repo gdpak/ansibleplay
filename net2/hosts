@@ -1,8 +1,12 @@
 [eos]
 eos02 ansible_host=eos02.example.net
+veos1 ansible_host=11.1.1.8
 
 [ios]
 ios02 ansible_host=ios02.example.net
+iosl202 ansible_host=iosl202.example.net
+ios_docker1 ansible_host=172.17.0.2
+ios_docker2 ansible_host=172.17.0.3
 
 [vyos]
 an-vyos-02.ansible.eng.rdu2.redhat.com 

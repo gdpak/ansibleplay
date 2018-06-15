@@ -5,9 +5,10 @@
 - hosts: iosxr01
   tasks:
     - name: copy file from controller to iosxr
-      network_put:
-          src: biox.cfg
-          dest: '/misc/scratch/biox11.cfg'
+      net_put:
+          src: 'nonascii.bin'
+          dest: '/misc/scratch/nonascii.bin'
+#mode: 'template'
       register: result
       
     - debug:
@@ -16,7 +17,7 @@
 - hosts: nxos01
   tasks:
     - name: copy file from controller to nxos + scp (Default)
-      network_put:
+      net_put:
           src: nxos_ansible.cfg  
       register: result
       tags: basic
@@ -25,7 +26,7 @@
           msg: "{{ result }}"
 
     - name: copy file from controller to nxos + dest specified
-      network_put:
+      net_put:
           src: nxos_ansible.cfg 
           dest: 'bootflash:nxos_24_04_2018.cfg'
       register: result
@@ -35,7 +36,7 @@
           msg: "{{ result }}"
 
     - name: copy file from controller to nxos + sftp protocol
-      network_put:
+      net_put:
           src: nxos_ansible.cfg 
           protocol: sftp 
       register: result
@@ -45,7 +46,7 @@
           msg: "{{ result }}"
 
     - name: copy large config file
-      network_put:
+      net_put:
           src: 2mb_config.cfg
       register: result
       tags: large
@@ -56,7 +57,7 @@
 - hosts: ios02
   tasks:
     - name: copy file from controller to ios + scp (Default)
-      network_put:
+      net_put:
           src: aios.cfg  
       register: result
       tags: basic
@@ -66,7 +67,7 @@
 
   tasks:
     - name: copy file from ios to ansible ctrl
-      network_get:
+      net_get:
           src: 'ios.cfg'
       register: result
       tags: basic_get
@@ -77,7 +78,7 @@
 - hosts: iosxr02
   tasks:
     - name: copy file from controller to iosxr02 + scp (Default)
-      network_put:
+      net_put:
           src: iosxr.cfg
           dest: 'disk0:/aios1.cfg'
       register: result
@@ -88,7 +89,7 @@
 
   tasks:
     - name: copy file from iosxr to ansible ctrl
-      network_get:
+      net_get:
           src: '/misc/scratch/a.cfg'
       register: result
       tags: basic_get

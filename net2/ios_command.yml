@@ -1,0 +1,23 @@
+---
+# tasks file for roles/iosplay
+#
+#
+- hosts: ios_docker1
+  vars:
+      prefix_set: test_set
+
+  tasks:
+  - name: ios command
+    ios_command:
+        commands: 'show running-config | grep pppoe'
+    register: config
+
+- hosts: ios02
+  vars:
+      prefix_set: test_set
+
+  tasks:
+  - name: ios command
+    ios_command:
+        commands: 'show running-config | include ip prefix-list deny-all'
+    register: config

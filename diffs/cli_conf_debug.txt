@@ -1,0 +1,46 @@
+diff --git a/lib/ansible/plugins/cliconf/ios.py b/lib/ansible/plugins/cliconf/ios.py
+index 2883907..a0c4c14 100644
+--- a/lib/ansible/plugins/cliconf/ios.py
++++ b/lib/ansible/plugins/cliconf/ios.py
+@@ -27,6 +27,7 @@ from itertools import chain
+ from ansible.module_utils._text import to_text
+ from ansible.module_utils.network.common.utils import to_list
+ from ansible.plugins.cliconf import CliconfBase, enable_mode
++import q
+ 
+ 
+ class Cliconf(CliconfBase):
+@@ -36,6 +37,7 @@ class Cliconf(CliconfBase):
+ 
+         device_info['network_os'] = 'ios'
+         reply = self.get('show version')
++        q(reply)
+         data = to_text(reply, errors='surrogate_or_strict').strip()
+ 
+         match = re.search(r'Version (\S+)', data)
+diff --git a/lib/ansible/plugins/connection/network_cli.py b/lib/ansible/plugins/connection/network_cli.py
+index 9696890..405900e 100644
+--- a/lib/ansible/plugins/connection/network_cli.py
++++ b/lib/ansible/plugins/connection/network_cli.py
+@@ -164,6 +164,7 @@ import re
+ import os
+ import socket
+ import traceback
++import q
+ 
+ from ansible import constants as C
+ from ansible.errors import AnsibleConnectionFailure
+@@ -395,9 +396,12 @@ class Connection(ConnectionBase):
+         self._matched_prompt = None
+         self._matched_cmd_prompt = None
+         matched_prompt_window = window_count = 0
+-
++ 
++        i = 0
+         while True:
+             data = self._ssh_shell.recv(256)
++            q("at iteration %d command=%s data=%s" % (i, command, data))
++            i = i +1 
+ 
+             # when a channel stream is closed, received data will be empty
+             if not data:

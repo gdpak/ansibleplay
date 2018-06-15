@@ -1,0 +1,105 @@
+!! IOS XR Configuration version = 6.1.2
+!! Last configuration change at Wed Jun  6 08:28:44 2018 by vagrant
+!
+telnet vrf default ipv4 server max-servers 10
+username vagrant
+ group root-lr
+ group cisco-support
+ secret 5 $1$Vq36$trKjMVaD/QNTShlBIo9XX/
+!
+username ansible
+ group root-lr
+ group cisco-support
+ password 7 104F070A0C151E0E
+!
+tpa
+ address-family ipv4
+  update-source MgmtEth0/RP0/CPU0/0
+ !
+!
+ipv4 access-list ansible-1
+ 10 deny ipv4 13.0.0.0 0.255.255.255 any log
+!
+interface Loopback888
+ description test for ansible
+ shutdown
+!
+interface MgmtEth0/RP0/CPU0/0
+ ipv4 address dhcp
+!
+interface GigabitEthernet0/0/0/0
+ ipv4 address 11.1.1.3 255.255.255.0
+!
+interface GigabitEthernet0/0/0/1
+ ipv4 address 12.1.1.2 255.255.255.0
+ ipv4 access-group ansible-1 ingress
+!
+prefix-set EBGP-PEER-BOGONS
+  0.0.0.0/0,
+  0.0.0.0/8 le 32,
+  10.0.0.0/8 le 32,
+  127.0.0.0/8 le 32,
+  169.254.0.0/16 le 32,
+  172.16.0.0/12 le 32,
+  192.0.0.0/24 le 32,
+  192.0.2.0/24 le 32,
+  192.168.0.0/16 le 32,
+  198.18.0.0/15 le 32,
+  224.0.0.0/4 le 32,
+  240.0.0.0/4 le 32
+end-set
+!
+prefix-set acme_DC_Internal
+  137.1.0.0/16,
+  137.1.16.0/24,
+  137.1.18.0/24,
+  137.1.20.0/24,
+  137.1.22.0/24,
+  137.1.23.0/24,
+  137.1.24.0/24,
+  137.1.29.0/24,
+  137.1.30.0/24,
+  137.1.31.0/24,
+  137.1.32.0/21,
+  137.1.40.0/22,
+  209.1.0.0/16
+end-set
+!
+router static
+ address-family ipv4 unicast
+  0.0.0.0/0 MgmtEth0/RP0/CPU0/0 10.0.2.2
+ !
+!
+ssh server v2
+ssh server vrf default
+ssh server netconf vrf default
+grpc
+ port 57777
+!
+telemetry model-driven
+ destination-group yang-local
+  address family ipv4 11.1.1.5 port 9988
+   encoding self-describing-gpb
+   protocol tcp
+  !
+ !
+ sensor-group intf
+  sensor-path Cisco-IOS-XR-infra-statsd-oper:infra-statistics/interfaces/interface/latest/generic-counters
+ !
+ sensor-group if-oper
+  sensor-path Cisco-IOS-XR-pfi-im-cmd-oper:interfaces/interface-xr/interface
+ !
+ subscription Sub1
+  sensor-group-id intf sample-interval 1000
+  sensor-group-id if-oper sample-interval 1000
+  destination-id yang-local
+ !
+ subscription Sub2
+ !
+!
+netconf agent tty
+!
+netconf-yang agent
+ ssh
+!
+end
