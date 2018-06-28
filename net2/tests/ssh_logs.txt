@@ -1,0 +1,30 @@
+DEB [20180619-11:46:41.704] thr=1   paramiko.transport: starting thread (client mode): 0xbfb50650L
+DEB [20180619-11:46:41.705] thr=1   paramiko.transport: Local version/idstring: SSH-2.0-paramiko_2.4.0
+DEB [20180619-11:46:42.032] thr=1   paramiko.transport: Remote version/idstring: SSH-2.0-Cisco-1.25
+INF [20180619-11:46:42.032] thr=1   paramiko.transport: Connected (version 2.0, client Cisco-1.25)
+DEB [20180619-11:46:42.358] thr=1   paramiko.transport: kex algos:[u'diffie-hellman-group-exchange-sha1', u'diffie-hellman-group14-sha1', u'diffie-hellman-group1-sha1'] server key:[u'ssh-rsa'] client encrypt:[u'aes128-ctr', u'aes192-ctr', u'aes256-ctr', u'aes128-cbc', u'3des-cbc', u'aes192-cbc', u'aes256-cbc'] server encrypt:[u'aes128-ctr', u'aes192-ctr', u'aes256-ctr', u'aes128-cbc', u'3des-cbc', u'aes192-cbc', u'aes256-cbc'] client mac:[u'hmac-sha1', u'hmac-sha1-96'] server mac:[u'hmac-sha1', u'hmac-sha1-96'] client compress:[u'none'] server compress:[u'none'] client lang:[u''] server lang:[u''] kex follows?False
+DEB [20180619-11:46:42.359] thr=1   paramiko.transport: Kex agreed: diffie-hellman-group-exchange-sha1
+DEB [20180619-11:46:42.359] thr=1   paramiko.transport: HostKey agreed: ssh-rsa
+DEB [20180619-11:46:42.359] thr=1   paramiko.transport: Cipher agreed: aes128-ctr
+DEB [20180619-11:46:42.359] thr=1   paramiko.transport: MAC agreed: hmac-sha1
+DEB [20180619-11:46:42.359] thr=1   paramiko.transport: Compression agreed: none
+DEB [20180619-11:46:42.729] thr=1   paramiko.transport: Got server p (2048 bits)
+DEB [20180619-11:46:43.204] thr=1   paramiko.transport: kex engine KexGex specified hash_algo <built-in function openssl_sha1>
+DEB [20180619-11:46:43.205] thr=1   paramiko.transport: Switch to new keys ...
+DEB [20180619-11:46:43.219] thr=2   paramiko.transport: Attempting password auth...
+DEB [20180619-11:46:44.142] thr=1   paramiko.transport: userauth is OK
+INF [20180619-11:46:44.143] thr=1   paramiko.transport: Auth banner: 
+this is my login banner
+that has a multiline
+string
+
+INF [20180619-11:46:44.475] thr=1   paramiko.transport: Authentication (password) successful!
+DEB [20180619-11:46:44.491] thr=2   paramiko.transport: [chan 0] Max packet in: 32768 bytes
+DEB [20180619-11:46:44.812] thr=1   paramiko.transport: [chan 0] Max packet out: 4096 bytes
+DEB [20180619-11:46:44.812] thr=1   paramiko.transport: Secsh channel 0 opened.
+DEB [20180619-11:46:45.186] thr=1   paramiko.transport: [chan 0] Sesch channel 0 request ok
+DEB [20180619-11:46:45.620] thr=1   paramiko.transport: [chan 0] EOF received (0)
+DEB [20180619-11:46:45.621] thr=1   paramiko.transport: [chan 0] EOF sent (0)
+DEB [20180619-11:46:45.623] thr=1   paramiko.transport: EOF in transport thread
+INF [20180619-13:12:49.839] thr=1   paramiko.transport: Connected (version 2.0, client OpenSSH_6.6.1)
+INF [20180619-13:12:50.911] thr=1   paramiko.transport: Authentication (keyboard-interactive) successful!
