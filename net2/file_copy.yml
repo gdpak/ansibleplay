@@ -54,21 +54,20 @@
     - debug:
           msg: "{{ result }}"
 
-- hosts: ios02
+- hosts: csr01 ios01
   tasks:
     - name: copy file from controller to ios + scp (Default)
       net_put:
-          src: aios.cfg  
+          src: xaa
       register: result
-      tags: basic
+      tags: basic_put
 
     - debug:
           msg: "{{ result }}"
 
-  tasks:
     - name: copy file from ios to ansible ctrl
       net_get:
-          src: 'ios.cfg'
+          src: 'nonascii.bin'
       register: result
       tags: basic_get
 
@@ -77,7 +76,7 @@
 
 - hosts: iosxr02
   tasks:
-    - name: copy file from controller to iosxr02 + scp (Default)
+    - name: copy file to iosxr02 + scp (Default)
       net_put:
           src: iosxr.cfg
           dest: 'disk0:/aios1.cfg'
@@ -87,7 +86,6 @@
     - debug:
           msg: "{{ result }}"
 
-  tasks:
     - name: copy file from iosxr to ansible ctrl
       net_get:
           src: '/misc/scratch/a.cfg'
