@@ -61,6 +61,13 @@
           src: xaa
       register: result
       tags: basic_put
+- hosts: ios02
+  tasks:
+    - name: copy file from controller to ios + scp (Default)
+      net_put:
+          src: aios.cfg  
+      register: result
+      tags: basic
 
     - debug:
           msg: "{{ result }}"
@@ -76,7 +83,7 @@
 
 - hosts: iosxr02
   tasks:
-    - name: copy file to iosxr02 + scp (Default)
+    - name: copy file from controller to iosxr02 + scp (Default)
       net_put:
           src: iosxr.cfg
           dest: 'disk0:/aios1.cfg'
