@@ -1,1 +1,1 @@
-# sample playbooks for personal use
+# sample playbooks
