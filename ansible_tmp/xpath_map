@@ -1,0 +1,2 @@
+junos_xpath_map = \
+{bgp_config_global_as: {openconfig_xpath: 'bgp/global/config/as', junos_xpath: 'routing-options/autonomous-system/as-number'}}
