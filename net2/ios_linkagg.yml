@@ -6,7 +6,7 @@
   vars:
      interface_prefix: 'GigabitEthernet'
      pc_start: 3
-     pc_end: 4
+     pc_end: 3
 
   tasks:
      - name: Setup aggregates

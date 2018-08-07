@@ -10,5 +10,5 @@ cli:
   host: "{{ ansible_host }}"
   username: ansible
   password: ansible
-
-ts: "{{ ansible_date_time.iso8601_micro }}"
+  authorize: yes
+  auth_pass: cisco
