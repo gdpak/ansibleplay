@@ -1,0 +1,15 @@
+---
+# tasks file for roles/iosplay
+#
+#
+- hosts: iosxr01
+  tasks:
+    - name: Initial configs
+      iosxr_config:
+        lines:
+          - username admins
+
+    - name: get user
+      iosxr_command:
+         commands:
+           - show run form junk | i username

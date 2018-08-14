@@ -5,14 +5,6 @@
 - hosts: iosxr01
   vars:
       prefix_set: test_set
-      prefixes:
-        - '1.1.1.1/24, 
-           2.2.2.2/24,
-           3.3.3.3/24,
-           4.4.4.4/24,
-           6.6.6.6/24,
-           7.0.0.0/8'
-
   tasks:
   - name: Configure Prefix-Set "{{ prefix_set }}"
     iosxr_config:
@@ -21,9 +13,10 @@
         - end-set
       parents: prefix-set {{ prefix_set }}
     with_items:
-        - "{{ prefixes }}"
+      - 1.1.1.1/24 
+      - 2.2.2.2/24
+      - 3.3.3.3/24
+      - 4.4.4.4/24
+      - 5.5.5.5/24
+      - 6.6.6.6/24
 
-  - name: Configure Prefix-Set "{{ prefix_set }}" from file
-    iosxr_config:
-      src: iosxr_prefix_set.j2
-    tags: file

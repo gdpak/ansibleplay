@@ -67,3 +67,29 @@
         src: access_list.j2
       register: result
       tags: acl
+
+    - name: IT
+      iosxr_config: &delreplace
+          src: config_del_interface.txt
+          replace: config
+          backup: yes
+      register: result
+      tags: it_del
+
+    - name: IT_2
+      iosxr_config: *delreplace
+      register: result
+      tags: it_del2
+      
+    - name: IT3
+      iosxr_config: &addreplace
+          src: config_add_interface.txt
+          replace: config
+          backup: yes
+      register: result
+      tags: it_add
+
+    - name: IT_4
+      iosxr_config: *addreplace
+      register: result
+      tags: it_add2
