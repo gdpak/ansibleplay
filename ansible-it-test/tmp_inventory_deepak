@@ -113,3 +113,14 @@ ansible_user=cisco
 ansible_password=redhat1234
 ansible_network_os=ios
 ansible_connection=network_cli
+
+[asa]
+asa1 ansible_host=10.13.113.116
+
+[asa:vars]
+ansible_user=admin
+ansible_password=redhat61
+ansible_network_os=asa
+ansible_connection=network_cli
+ansible_become_method=enable
+ansible_become_password=redhat61

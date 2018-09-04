@@ -1,0 +1,17 @@
+---
+# tasks file for roles/iosplay
+#
+#
+- hosts: csr01
+  tasks:
+    - name: config policy-map 
+      ios_config:
+          lines:
+              - set ip precedence 5
+          parents: ['policy-map p1' , 'class c1']
+          match: strict
+      register: result
+      
+    - debug:
+          msg: "{{ result }}"
+

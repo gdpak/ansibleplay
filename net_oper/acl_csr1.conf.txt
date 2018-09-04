@@ -1,0 +1,5 @@
+access-list 101 deny   tcp 11.2.2.0 0.0.0.255 any eq www
+access-list 101 deny   tcp 11.2.2.0 0.0.0.255 any eq 443
+access-list 101 permit tcp host 11.2.2.34 any eq www
+access-list 101 permit tcp host 11.3.3.0 any eq www
+access-list 101 permit tcp host 11.3.3.0 any eq 443

@@ -1,0 +1,31 @@
+diff --git a/lib/ansible/plugins/cliconf/iosxr.py b/lib/ansible/plugins/cliconf/iosxr.py
+index d6828e2..5b9abbd 100644
+--- a/lib/ansible/plugins/cliconf/iosxr.py
++++ b/lib/ansible/plugins/cliconf/iosxr.py
+@@ -22,6 +22,7 @@ __metaclass__ = type
+ import collections
+ import re
+ import json
++import q
+ 
+ from ansible.errors import AnsibleConnectionFailure
+ from ansible.module_utils._text import to_text
+@@ -103,14 +104,10 @@ class Cliconf(CliconfBase):
+             results.append(self.send_command(**line))
+             requests.append(cmd)
+ 
+-        diff = self.get_diff(admin=admin)
+-        config_diff = diff.get('config_diff')
+-        if config_diff or replace:
+-            resp['diff'] = config_diff
+-            if commit:
+-                self.commit(comment=comment, label=label, replace=replace)
+-            else:
+-                self.discard_changes()
++        if commit:
++           self.commit(comment=comment, label=label, replace=replace)
++        else:
++           self.discard_changes()
+ 
+         self.abort(admin=admin)
+
