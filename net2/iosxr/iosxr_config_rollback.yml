@@ -1,0 +1,29 @@
+---
+# tasks file for roles/iosplay
+#
+#
+- hosts: iosxr01
+  vars:
+    l3vpn : {
+        "vrf" : {
+            "name": "3goss",
+            "rd": "64444:8883",
+            "rtImportList" : [
+                "64444:8883",
+                "64444:8891"
+                ],
+            "rtExportList": [
+                "64444:8883",
+                "64444:8891"
+                ]
+        }
+    }
+  tasks:
+    - name: create bgp config for host
+      template:
+       src: "vrf.j2"
+       dest: "bgp_iosxr.j2"
+
+    - name: BGP
+      iosxr_config:
+        src: bgp_iosxr.j2

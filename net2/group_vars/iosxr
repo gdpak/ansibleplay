@@ -2,14 +2,3 @@ ansible_connection: network_cli
 ansible_network_os: iosxr
 ansible_ssh_user: ansible
 ansible_ssh_password: ansible
-cli:                                                                                                                             
-  host: "{{ ansible_host }}"                                                                                                     
-  username:  root                                                                        
-  password:  root                                                                  
-  transport: cli
-netconf: 
-  host: "{{ ansible_host }}"                                                                                                     
-  username:  vagrant                                                                       
-  password:  vagrant                                                           
-  transport: netconf
-

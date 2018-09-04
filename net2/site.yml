@@ -1,7 +1,0 @@
-- hosts: leafs
-  roles:
-    - { role: eosplay }
-
-- hosts: ios
-  roles:
-    - { role: iosplay }

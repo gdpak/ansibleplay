@@ -1,0 +1,25 @@
+vrf {{ l3vpn.vrf.name }}
+ address-family ipv4 unicast
+  import route-target
+  {% for rtImport in l3vpn.vrf.rtImportList %}
+   {{rtImport}}
+  {% endfor %}
+  !
+  export route-target
+  {% for rtExport in l3vpn.vrf.rtExportList %}
+   {{rtExport}}
+  {% endfor %}
+  !
+ !
+!
+router bgp 64444
+ address-family vpnv4 unicast
+ !
+ vrf {{ l3vpn.vrf.name }}
+  rd {{ l3vpn.vrf.rd }}
+  address-family ipv4 unicast
+   redistribute connected
+   redistribute static
+  !
+ !
+!

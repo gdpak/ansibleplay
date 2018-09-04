@@ -1,0 +1,10 @@
+---
+# tasks file for roles/iosplay
+#
+#
+- hosts: csr01
+  tasks:
+  - name: ios command
+    ios_command:
+        commands: 'show running-config'
+    register: result
