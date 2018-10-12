@@ -1,0 +1,8 @@
+---
+######
+# IOSxr CI tests
+
+- hosts: iosxr01
+  tasks:
+    - name: Include IOS CI tests
+      include_tasks: sublevel_strict_mul_parents.yaml

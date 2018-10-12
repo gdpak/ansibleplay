@@ -80,12 +80,13 @@ ansible_ssh_user=ansible
 ansible_ssh_pass=ansible
 
 [openvswitch]
-ovs1 ansible_host=11.1.1.21
-#ovs2 ansible_host=localhost
+#ovs1 ansible_host=11.1.1.21
+ovs2 ansible_host=localhost
 
 [openvswitch:vars]
 ansible_ssh_user=vagrant
 ansible_ssh_pass=vagrant
+ansible_connection=local
 
 [tgn_source]
 tgn1 ansible_host=11.1.1.21

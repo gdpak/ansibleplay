@@ -1,0 +1,161 @@
+diff --git a/tests/config_manager/config_manager/tasks/get.yml b/tests/config_manager/config_manager/tasks/get.yml
+new file mode 100644
+index 0000000..4a3f9c6
+--- /dev/null
++++ b/tests/config_manager/config_manager/tasks/get.yml
+@@ -0,0 +1,13 @@
++---
++- name: get config for verification
++  include_role:
++    name:  "{{ config_manager_role }}"
++  vars:
++    ansible_network_provider: "{{ cisco_ios_role }}"
++    function: get
++  register: result
++
++- assert:
++    that:
++      - routing == false
++
+diff --git a/tests/config_manager/config_manager/tasks/load.yml b/tests/config_manager/config_manager/tasks/load.yml
+new file mode 100644
+index 0000000..5c83988
+--- /dev/null
++++ b/tests/config_manager/config_manager/tasks/load.yml
+@@ -0,0 +1,58 @@
++---
++
++- name: Include vars for load function tests
++  include_vars:
++    file: "{{ playbook_dir }}/../vars/load.yml"
++
++- block:
++    - name: cleanup device configs
++      include_role:
++        name:  "{{ config_manager_role }}"
++      vars:
++        ansible_network_provider: "{{ cisco_ios_role }}"
++        function: load
++        config_manager_text: "{{ setup_configs }}"
++        ios_config_rollback_enabled: false
++  ignore_errors: true
++
++- name: load config via text string
++  include_role:
++    name:  "{{ config_manager_role }}"
++  vars:
++    ansible_network_provider: "{{ cisco_ios_role }}"
++    function: load
++    config_manager_text: "{{ config_text_valid }}"
++  register: result
++
++# FIXME: above task does not return changed == true even if there is diff
++- assert:
++    that:
++      -  result.changed == true
++
++- name: load valid configurations into device using config file
++  include_role:
++    name:  "{{ config_manager_role }}"
++  vars:
++    ansible_network_provider: "{{ cisco_ios_role }}"
++    function: load
++    config_manager_file: "{{ config_files_path }}/csr01_config_valid.j2" 
++  register: result
++
++# FIXME: above task does not return changed == true even if there is diff
++- assert:
++    that:
++      -  result.changed == true
++
++- name: test rollback in case of wrong config using file
++  include_role:
++    name:  "{{ config_manager_role }}"
++  vars:
++    ansible_network_provider: "{{ cisco_ios_role }}"
++    function: load
++    config_manager_file: "{{ config_files_path }}/csr01_config_error.j2"
++  register: result
++  ignore_errors: true
++
++- assert:
++    that:
++      -  result.failed == true
+diff --git a/tests/config_manager/config_manager/tasks/main.yml b/tests/config_manager/config_manager/tasks/main.yml
+new file mode 100644
+index 0000000..cd3504c
+--- /dev/null
++++ b/tests/config_manager/config_manager/tasks/main.yml
+@@ -0,0 +1,13 @@
++---
++- hosts: csr01
++  gather_facts: no
++  tasks:
++    - name: Include vars
++      include_vars:
++        file: "{{ playbook_dir }}/../vars/default.yml"
++
++    - name: executing 'get' function tests
++      include_tasks: get.yml
++
++    - name: executing 'load' function tests
++      include_tasks: load.yml
+diff --git a/tests/config_manager/config_manager/templates/csr01_config_error.j2 b/tests/config_manager/config_manager/templates/csr01_config_error.j2
+new file mode 100644
+index 0000000..c1cedd3
+--- /dev/null
++++ b/tests/config_manager/config_manager/templates/csr01_config_error.j2
+@@ -0,0 +1,5 @@
++no router ospf 10
++!
++router ospf 10
++ network  14.1.1.0 0.0.0.255 area 1
++ neighbor 13.1.1.0 0.0.0.255 area 1
+diff --git a/tests/config_manager/config_manager/templates/csr01_config_valid.j2 b/tests/config_manager/config_manager/templates/csr01_config_valid.j2
+new file mode 100644
+index 0000000..cfe7b52
+--- /dev/null
++++ b/tests/config_manager/config_manager/templates/csr01_config_valid.j2
+@@ -0,0 +1,5 @@
++no router ospf 10
++!
++router ospf 10
++ network 14.1.1.0 0.0.0.255 area 1
++ network 13.1.1.0 0.0.0.255 area 1
+diff --git a/tests/config_manager/config_manager/vars/default.yml b/tests/config_manager/config_manager/vars/default.yml
+new file mode 100644
+index 0000000..9721d76
+--- /dev/null
++++ b/tests/config_manager/config_manager/vars/default.yml
+@@ -0,0 +1,6 @@
++---
++# Vars for test env of ansible-network.cisco_ios role
++
++config_manager_role: "{{ playbook_dir }}/../../../../../ansible-network.config_manager"
++cisco_ios_role: "{{ playbook_dir }}/../../../../../ansible-network.cisco_ios"
++config_files_path: "{{ playbook_dir }}/../templates/"
+diff --git a/tests/config_manager/config_manager/vars/load.yml b/tests/config_manager/config_manager/vars/load.yml
+new file mode 100644
+index 0000000..f6ea587
+--- /dev/null
++++ b/tests/config_manager/config_manager/vars/load.yml
+@@ -0,0 +1,10 @@
++---
++# Vars specific to load test suite
++#
++
++setup_configs: "no interface loopback 100 \n 
++                no router ospf 10 " 
++
++config_text_valid: "interface loopback 100 \n
++                     description configured by config_manager role"
++
+diff --git a/tests/config_manager/test.yml b/tests/config_manager/test.yml
+new file mode 100644
+index 0000000..cd14bfb
+--- /dev/null
++++ b/tests/config_manager/test.yml
+@@ -0,0 +1,3 @@
++---
++
++- import_playbook: config_manager/tasks/main.yml

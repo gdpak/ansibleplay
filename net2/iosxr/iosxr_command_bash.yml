@@ -1,0 +1,12 @@
+---
+# tasks file for roles/iosplay
+#
+#
+- hosts: iosxr01
+  vars:
+  tasks:
+  - name: create key file
+    iosxr_command:
+      commands:
+        - bash -c mkdir /home/ansible/.ssh
+    register: result

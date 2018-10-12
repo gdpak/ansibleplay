@@ -1,0 +1,8 @@
+---
+######
+# EOS CI tests
+
+- hosts: eos01
+  tasks:
+    - name: Include EOS CI tests
+      include_tasks: sublevel_strict_mul_parents.yaml
