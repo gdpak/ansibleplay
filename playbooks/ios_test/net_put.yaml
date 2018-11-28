@@ -1,0 +1,15 @@
+---
+# tasks file for roles/iosplay
+#
+#
+- hosts: ios01
+  tasks:
+    - name: copy 1 MB file with task timeout set
+      net_put:
+        src: 1mb_random_char_bin
+      vars:
+        ansible_command_timeout: 200
+
+    - name: copy 1 MB file without task timeout set
+      net_put:
+        src: 1mb_random_char_bin2

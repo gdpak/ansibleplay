@@ -1,0 +1,13 @@
+---
+# ansible-dev cli tool: auto generated template for playbook
+#
+
+- hosts: ios01
+  #roles: {}
+
+  # Playbook execution starts from here
+  tasks:
+    - name: run hello world
+      include_role:
+        name: gdpak.cisco_ios
+        tasks_from: get_facts

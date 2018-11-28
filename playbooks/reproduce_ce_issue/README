@@ -1,0 +1,14 @@
+* terminal 1
+
+sh reproduce-server.sh
+   ... start a pseudo ssh server to wait for a connection
+
+
+* terminal 2
+
+sh reproduce-client.sh
+   ... it goes well, the server returns a prompt
+
+sh reproduce-ansible.sh
+   ... it can't catch a prompt, then timeout after 10 secs
+
