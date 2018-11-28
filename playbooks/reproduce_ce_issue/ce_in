@@ -1,0 +1,10 @@
+[all:vars]
+ansible_connection=network_cli
+ansible_network_os=ce
+ansible_user=arvind
+ansible_ssh_pass=Baldeo123
+ansible_port=2200
+
+[x1x2]
+localhost firmware=v600r008c10spc300_oc-cx-x1x2.cc patch=v600r008sph006.pat
+

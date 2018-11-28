@@ -1,0 +1,15 @@
+- name: Upgrade firmware
+  hosts: x1x2
+  gather_facts: no
+
+  tasks:
+    - name: 9.1 Upgrade the BootROM on each LPU, SFU, and MPU
+      cli_command:
+        command: upgrade lpu all cfcard:/{{ firmware }} bootrom
+        prompt:
+          - 'Confirm to upgrade'
+        answer:
+          - 'y\r\n'
+      register: nineone
+    - debug: msg="{{ nineone.stdout_lines }}"
+

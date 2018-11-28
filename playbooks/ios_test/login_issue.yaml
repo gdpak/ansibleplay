@@ -1,0 +1,17 @@
+---
+- hosts: ios_docker01
+  tasks:
+    - name: "Wait for device to be upgraded and rebooted"
+      iosxr_command:
+        provider:
+          host: "{{ ansible_host }}"
+          username: "{{ ansible_user }}"
+          password: "{{ ansible_ssh_pass }}"
+        commands:
+          - command: "show version | grep minut --color=never"
+        wait_for:
+          - result contains minutess
+      register: result
+      until: result is succeeded
+      retries: 5
+      delay: 60
