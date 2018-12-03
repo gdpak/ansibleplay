@@ -1,0 +1,879 @@
+!! IOS XR Configuration version = 6.1.2
+!! Last configuration change at Sat Apr 21 20:19:15 2018 by vagrant
+!
+taskgroup priv1
+ task read acl
+ task execute basic-services
+!
+telnet vrf default ipv4 server max-servers 10
+username vagrant
+ group root-lr
+ group cisco-support
+ secret 5 $1$Vq36$trKjMVaD/QNTShlBIo9XX/
+!
+username ansible
+ group netadmin
+ password 7 1513051F0D282721
+!
+username root
+ group root-lr
+ group cisco-support
+ password 7 02140B541F
+!
+tpa
+ address-family ipv4
+  update-source MgmtEth0/RP0/CPU0/0
+ !
+!
+interface Loopback0
+ ipv4 address 11.21.21.23 255.255.255.255
+!
+interface Loopback888
+ description test for ansible
+ shutdown
+!
+interface Loopback999
+ description this is a test interface for prefix-set
+!
+interface MgmtEth0/RP0/CPU0/0
+ ipv4 address dhcp
+!
+interface GigabitEthernet0/0/0/0
+ description test-interface-0
+ mtu 512
+ ipv4 address 11.1.1.3 255.255.255.0
+ speed 100
+ duplex half
+!
+interface GigabitEthernet0/0/0/1
+ description test_interface_1
+ ipv4 address 11.7.1.1 255.255.255.0
+!
+interface GigabitEthernet0/0/0/2
+ description test-interface
+ mtu 512
+ ipv4 address 11.19.2.1 255.255.255.0
+!
+prefix-set abc
+  1.1.1.1/24
+end-set
+!
+prefix-set null
+  137.1.16.255/32
+end-set
+!
+prefix-set myprefix
+  11.1.1.1/23,
+  12.1.1.4/22,
+  12.1.1.3/25
+end-set
+!
+prefix-set ebpg_filter
+end-set
+!
+prefix-set default-only
+  0.0.0.0/0
+end-set
+!
+prefix-set cust-announce
+end-set
+!
+prefix-set cust-ddos-DDOS
+end-set
+!
+prefix-set cust-no-export
+end-set
+!
+prefix-set cust-ddos-ISP-A
+end-set
+!
+prefix-set default-only-v6
+  ::/0
+end-set
+!
+prefix-set my-new-empty-pset
+end-set
+!
+prefix-set EBGP-PEER-BOGONS
+  0.0.0.0/0,
+  0.0.0.0/8 le 32,
+  10.0.0.0/8 le 32,
+  127.0.0.0/8 le 32,
+  169.254.0.0/16 le 32,
+  172.16.0.0/12 le 32,
+  192.0.0.0/24 le 32,
+  192.0.2.0/24 le 32,
+  192.168.0.0/16 le 32,
+  198.18.0.0/15 le 32,
+  224.0.0.0/4 le 32,
+  240.0.0.0/4 le 32
+end-set
+!
+prefix-set acme_DC_Internal
+  137.1.0.0/16,
+  137.1.16.0/24,
+  137.1.18.0/24,
+  137.1.20.0/24,
+  137.1.22.0/24,
+  137.1.23.0/24,
+  137.1.24.0/24,
+  137.1.29.0/24,
+  137.1.30.0/24,
+  137.1.31.0/24,
+  137.1.32.0/21,
+  137.1.40.0/22,
+  209.1.0.0/16
+end-set
+!
+prefix-set cust-announce-v6
+end-set
+!
+prefix-set cust-ddos-DDOS-A
+end-set
+!
+prefix-set my-new-empty-set
+end-set
+!
+prefix-set EBGP6-PEER-BOGONS
+  2001:db8::/32 le 128,
+  3ffe::/16 le 128,
+  ::/8 le 128,
+  fe00::/9 le 128,
+  ff00::/8 le 128
+end-set
+!
+prefix-set cust-no-export-v6
+end-set
+!
+prefix-set Conditional_Routes
+  8.8.8.0/24,
+  7.0.0.0/8,
+  52.8.0.0/16,
+  31.13.64.0/18,
+  4.0.0.0/9
+end-set
+!
+prefix-set cust-ddos-ISP-A-CP
+end-set
+!
+prefix-set acme_DC_Internal-V6
+  2001:f480::/32
+end-set
+!
+prefix-set cust-ddos-DDOS-A-CP
+end-set
+!
+prefix-set deny-connected-isis
+  10.0.0.0/8 ge 8,
+  100.64.0.0/10 ge 10,
+  127.0.0.0/8 ge 8,
+  169.254.0.0/16 ge 16,
+  172.16.0.0/12 ge 12,
+  192.0.0.0/24 ge 24,
+  192.0.2.0/24 ge 24,
+  198.18.0.0/15 ge 15,
+  192.168.0.0/16 ge 16
+end-set
+!
+prefix-set cust-announce-backup
+end-set
+!
+prefix-set dc-bbone-prefixes-v6
+  2001:f480:0:118::/64
+end-set
+!
+prefix-set deny-connected-isis6
+  fc00::/7 ge 7
+end-set
+!
+prefix-set cust-no-export-backup
+end-set
+!
+prefix-set EBGP-PEER-TOO-SPECIFIC
+  0.0.0.0/0 ge 25 le 32,
+  0.0.0.0/0 le 7
+end-set
+!
+prefix-set EBGP6-PEER-TOO-SPECIFIC
+  ::/0 ge 49 le 128
+end-set
+!
+prefix-set cust-announce-backup-v6
+end-set
+!
+prefix-set remote-router-loopbacks
+  137.1.39.0/24 le 32,
+  137.1.2.0/24 le 32
+end-set
+!
+prefix-set cust-no-export-backup-v6
+end-set
+!
+prefix-set defOrigConditionalRoutes
+  137.1.11.251/32,
+  137.1.11.252/32,
+  137.1.11.253/32,
+  137.1.11.254/32
+end-set
+!
+prefix-set remote-router-loopbacks6
+end-set
+!
+prefix-set EBGP-PEER-OTHER-UNDESIRABLES
+  198.17.46.0/24 le 32,
+  198.32.134.0/24 le 32,
+  198.32.146.0/24 le 32,
+  198.32.176.0/23 le 32,
+  206.72.210.0/23 le 32,
+  206.81.80.0/23 le 32,
+  206.223.123.0/24 le 32,
+  206.223.143.0/24 le 32,
+  207.231.240.0/20 le 32
+end-set
+!
+prefix-set EBGP6-PEER-OTHER-UNDESIRABLES
+  2001:504:0:3::/64 le 128,
+  2001:504:a::/64 le 128,
+  2001:504:b::/48 le 128,
+  2001:504:d::/64 le 128,
+  2001:504:12::/64 le 128,
+  2001:504:13::/64 le 128,
+  2001:504:16::/64 le 128
+end-set
+!
+as-path-set myaspathset
+  ios-regex '_1142$',
+  ios-regex '_1$',
+  ios-regex '_12$'
+end-set
+!
+as-path-set EBGP-PEER-AS16509-403-PERMIT-PATHS
+  ios-regex '^11164_8075_',
+  ios-regex '^11164_16509$',
+  ios-regex '^1116_16509_[0-9]+$',
+  ios-regex '^8075_',
+  ios-regex '^16509$',
+  ios-regex '^16509_[0-9]+$'
+end-set
+!
+community-set 190
+  1525:[65501..65517]
+end-set
+!
+community-set DC_CF_ISP
+  1525:65499
+end-set
+!
+community-set EBGP-PEER
+  1525:65299
+end-set
+!
+community-set acme_tags
+  1520:*,
+  1521:*,
+  1525:*,
+  1523:*
+end-set
+!
+community-set acme-BB-INT
+  1525:1525
+end-set
+!
+community-set DC_AT_MEMBERS
+  1525:65438,
+  1525:65436
+end-set
+!
+community-set EBGP-CUST-EXT
+  1525:65435
+end-set
+!
+community-set EBGP-PEER-EXT
+  1525:65284
+end-set
+!
+community-set blackhole-all
+  1525:666
+end-set
+!
+community-set blackhole-isp
+  1525:667
+end-set
+!
+community-set cust-announce
+  1525:65298,
+  1525:65436,
+  1525:65438,
+  1525:65439,
+  1525:65498,
+  1525:65511,
+  1523:65418,
+  1523:65436,
+  1523:65438
+end-set
+!
+community-set ddos-trust-CP
+  1525:65260,
+  1525:65266
+end-set
+!
+community-set HPR_CF_RE_PEER
+  1523:65419
+end-set
+!
+community-set acme_No_Export
+  1525:65535,
+  1523:65535,
+  1520:65535,
+  1521:65535
+end-set
+!
+community-set cust-no-export
+  1525:65439,
+  1525:65511,
+  1525:65535
+end-set
+!
+community-set DC_AT_CUST_ONLY
+  1525:65534
+end-set
+!
+community-set EBGP-CUST-NOEXP
+  1525:65535,
+  1523:65535,
+  1520:65535,
+  1521:65535,
+  11423:65535,
+  11422:65535
+end-set
+!
+community-set EBGP-CUST-EXP-PEER
+  1525:65298
+end-set
+!
+community-set EBGP6-CUST-EXP-PEER
+  1525:1525,
+  1525:65437,
+  1525:65439,
+  1525:65498,
+  1523:1523,
+  1523:65437,
+  1523:65439
+end-set
+!
+community-set acme-ISP-AUTHORIZED
+  1525:65498
+end-set
+!
+community-set DC_CF_COMMODITY_PEER
+  1525:65299
+end-set
+!
+community-set EBGP-PEER-HUBSITE-SVL
+  1525:65511
+end-set
+!
+community-set EBGP-CUST-WILDCARD-ANY
+  1523:*,
+  1525:*,
+  1521:*,
+  1520:*,
+  11423:*,
+  11422:*
+end-set
+!
+community-set ddos-level3-ISP-backbone
+  1525:65490,
+  1525:65494
+end-set
+!
+community-set ddos-level3-DDOS-backbone
+  202:0
+end-set
+!
+route-policy abc
+  pass
+end-policy
+!
+route-policy POLICY2
+end-policy
+!
+route-policy pass-all
+  pass
+end-policy
+!
+route-policy tag2as($tag)
+  if tag eq $tag then
+    prepend as-path $tag
+  else
+    pass
+  endif
+end-policy
+!
+route-policy DENY-ALL
+  drop
+end-policy
+!
+route-policy cust2bgp
+  set origin igp
+  set next-hop 137.1.16.12
+end-policy
+!
+route-policy deny-all
+  drop
+end-policy
+!
+route-policy cust_v4_in($cust_v4_pfx, $cust_v4_as_path, $cust_v4_no_auth, $cust_v4_need_auth, $hub_comm, $cust_v4_isp_auth_comm)
+  if ((as-path in $cust_v4_as_path) and (destination in $cust_v4_pfx)) then
+    apply global_cust_v4($cust_v4_no_auth, $cust_v4_need_auth, $hub_comm, $cust_v4_isp_auth_comm)
+  else
+    drop
+  endif
+end-policy
+!
+route-policy cust_v6_in($cust_v6_pfx, $cust_v6_as_path, $cust_v6_no_auth, $cust_v6_need_auth, $hub_comm, $cust_v6_isp_auth_comm)
+  if ((as-path in $cust_v6_as_path) and (destination in $cust_v6_pfx)) then
+    apply global_cust_v6($cust_v6_no_auth, $cust_v6_need_auth, $hub_comm, $cust_v6_isp_auth_comm)
+  else
+    drop
+  endif
+end-policy
+!
+route-policy cust2bgp-v6
+  set origin igp
+  set next-hop 2001:f480::118:9a41:c1
+end-policy
+!
+route-policy bgp_standard
+  set local-preference 100
+  delete community in acme_tags
+end-policy
+!
+route-policy default-only
+  if destination in default-only then
+    pass
+  else
+    drop
+  endif
+end-policy
+!
+route-policy static-to-bgp
+  if destination in cust-no-export then
+    apply cust2bgp
+    set community cust-no-export additive
+  elseif destination in cust-announce then
+    apply cust2bgp
+    set community cust-announce additive
+  elseif destination in cust-announce-backup then
+    apply cust2bgp
+    set local-preference 100
+    set weight 0
+    set community cust-announce additive
+  elseif destination in cust-no-export-backup then
+    apply cust2bgp
+    set local-preference 98
+    set weight 0
+    set community cust-no-export additive
+  else
+    drop
+  endif
+end-policy
+!
+route-policy global_cust_v4($cust_v4_no_auth, $cust_v4_need_auth, $hub_comm, $cust_v4_isp_auth_comm)
+  if (community matches-any blackhole-all) then
+    apply bgp_standard
+    set community (1525:666, 1525:65498, 1525:$hub_comm) additive
+    set next-hop 137.1.16.255
+  elseif ((community matches-any blackhole-isp) and (destination in $cust_v4_no_auth)) then
+    apply bgp_standard
+    set community (1525:667, 1525:65298, 1525:65498, 1525:65436, 1525:65438, 1525:65439, 1525:$hub_comm, 1523:65418, 1523:65436, 1523:65438) additive
+  elseif ((community matches-any blackhole-isp) and (destination in $cust_v4_need_auth)) then
+    apply bgp_standard
+    set community (1525:667, 1525:65298, 1525:65498, 1525:65436, 1525:65438, 1525:65439, 1525:$hub_comm, 1523:65418, 1523:65436, 1523:65438) additive
+  elseif (community matches-any blackhole-isp) then
+    apply bgp_standard
+    set community (1525:667, 1525:65498, 1525:65439, 1525:$hub_comm) additive
+  elseif (community matches-any DC_AT_CUST_ONLY) then
+    apply bgp_standard
+    set community (1525:65438, 1525:65436, 1525:$hub_comm, 1525:65534) additive
+  elseif (destination in $cust_v4_no_auth) then
+    apply bgp_standard
+    set community (1525:65298, 1525:65498, 1525:65436, 1525:65438, 1525:65439, 1523:65418, 1523:65436, 1523:65438, 1525:$hub_comm) additive
+  elseif ((destination in $cust_v4_need_auth) and (community matches-any $cust_v4_isp_auth_comm)) then
+    apply bgp_standard
+    set community (1525:65298, 1525:65498, 1525:65436, 1525:65438, 1525:65439, 1523:65418, 1523:65436, 1523:65438, 1525:$hub_comm) additive
+  elseif (destination in $cust_v4_need_auth) then
+    apply bgp_standard
+    set community (1525:65298, 1525:65436, 1525:65438, 1525:65439, 1523:65418, 1523:65436, 1523:65438, 1525:$hub_comm) additive
+  else
+    apply bgp_standard
+    set community (1525:65535, 1525:$hub_comm) additive
+  endif
+end-policy
+!
+route-policy global_cust_v6($cust_v6_no_auth, $cust_v6_need_auth, $hub_comm, $cust_v6_isp_auth_comm)
+  if (community matches-any blackhole-all) then
+    apply bgp_standard
+    set community (1525:666, 1525:65498, 1525:$hub_comm) additive
+    set next-hop 2001:f480::118:9a41:ff0
+  elseif ((community matches-any blackhole-isp) and (destination in $cust_v6_no_auth)) then
+    apply bgp_standard
+    set community (1525:667, 1525:65298, 1525:65498, 1525:65436, 1525:65438, 1525:65439, 1525:$hub_comm, 1523:65418, 1523:65436, 1523:65438) additive
+  elseif ((community matches-any blackhole-isp) and (destination in $cust_v6_need_auth)) then
+    apply bgp_standard
+    set community (1525:667, 1525:65298, 1525:65498, 1525:65436, 1525:65438, 1525:65439, 1525:$hub_comm, 1523:65418, 1523:65436, 1523:65438) additive
+  elseif (community matches-any blackhole-isp) then
+    apply bgp_standard
+    set community (1525:667, 1525:65498, 1525:65439, 1525:$hub_comm) additive
+  elseif (community matches-any DC_AT_CUST_ONLY) then
+    apply bgp_standard
+    set community (1525:65438, 1525:65436, 1525:$hub_comm, 1525:65534) additive
+  elseif (destination in $cust_v6_no_auth) then
+    apply bgp_standard
+    set community (1525:65298, 1525:65498, 1525:65436, 1525:65438, 1525:65439, 1523:65418, 1523:65436, 1523:65438, 1525:$hub_comm) additive
+  elseif ((destination in $cust_v6_need_auth) and (community matches-any $cust_v6_isp_auth_comm)) then
+    apply bgp_standard
+    set community (1525:65298, 1525:65498, 1525:65436, 1525:65438, 1525:65439, 1523:65418, 1523:65436, 1523:65438, 1525:$hub_comm) additive
+  elseif (destination in $cust_v6_need_auth) then
+    apply bgp_standard
+    set community (1525:65298, 1525:65436, 1525:65438, 1525:65439, 1523:65418, 1523:65436, 1523:65438, 1525:$hub_comm) additive
+  else
+    apply bgp_standard
+    set community (1525:65535, 1525:$hub_comm) additive
+  endif
+end-policy
+!
+route-policy default-only-v6
+  if destination in default-only-v6 then
+    pass
+  else
+    drop
+  endif
+end-policy
+!
+route-policy from_rr-clients
+  delete community in 190
+  set community (1525:65511) additive
+end-policy
+!
+route-policy static-to-bgp-v6
+  if destination in cust-no-export-v6 then
+    apply cust2bgp-v6
+    set community cust-no-export additive
+    set weight 0
+  elseif destination in cust-announce-v6 then
+    apply cust2bgp-v6
+    set community cust-announce additive
+    set weight 0
+  elseif destination in cust-announce-backup-v6 then
+    apply cust2bgp-v6
+    set weight 0
+    set local-preference 98
+    set community cust-announce additive
+  elseif destination in cust-no-export-backup-v6 then
+    apply cust2bgp-v6
+    set weight 0
+    set local-preference 98
+    set community cust-no-export additive
+  else
+    drop
+  endif
+end-policy
+!
+route-policy DEFAULT_ORIGINATE
+  if rib-has-route in Conditional_Routes then
+    pass
+  endif
+end-policy
+!
+route-policy EBGP_CUST_FULL_v4
+  if ((community matches-any DC_CF_COMMODITY_PEER) or (community matches-any DC_CF_ISP) or (community matches-any HPR_CF_RE_PEER) or (community matches-any DC_AT_MEMBERS)) then
+    set med igp-cost
+  elseif (community matches-any acme_No_Export) then
+    drop
+  else
+    drop
+  endif
+end-policy
+!
+route-policy EBGP_CUST_FULL_v6
+  if ((community matches-any DC_CF_COMMODITY_PEER) or (community matches-any DC_CF_ISP) or (community matches-any HPR_CF_RE_PEER) or (community matches-any DC_AT_MEMBERS)) then
+    set med igp-cost
+  elseif (community matches-any acme_No_Export) then
+    drop
+  else
+    drop
+  endif
+end-policy
+!
+route-policy ddos_bgp_standard
+  set local-preference 110
+  delete community in acme_tags
+end-policy
+!
+route-policy EBGP-PEER-SANITY-IN
+  if (as-path passes-through '[65412..65535]' ) then
+    drop
+  elseif ((destination in EBGP-PEER-BOGONS) or (destination in EBGP-PEER-OTHER-UNDESIRABLES)) then
+    drop
+  elseif (not destination in EBGP-PEER-TOO-SPECIFIC) then
+    pass
+  else
+    drop
+  endif
+end-policy
+!
+route-policy DEFAULT_ORIGINATE-V6
+  if rib-has-route in Conditional_Routes-V6 then
+    pass
+  endif
+end-policy
+!
+route-policy EBGP-PEER-SANITY-OUT
+  if ((destination in EBGP-PEER-BOGONS) or (destination in EBGP-PEER-OTHER-UNDESIRABLES)) then
+    drop
+  elseif (not destination in EBGP-PEER-TOO-SPECIFIC) then
+    pass
+  else
+    drop
+  endif
+end-policy
+!
+route-policy EBGP6-PEER-SANITY-IN
+  if (as-path passes-through '[65412..65535]' ) then
+    drop
+  elseif ((destination in EBGP6-PEER-BOGONS) or (destination in EBGP6-PEER-OTHER-UNDESIRABLES)) then
+    drop
+  elseif (not destination in EBGP6-PEER-TOO-SPECIFIC) then
+    pass
+  else
+    drop
+  endif
+end-policy
+!
+route-policy EBGP_PEER_SVL-PNI_IN
+  apply EBGP-PEER-SANITY-IN
+  set local-preference 45
+  delete community in EBGP-CUST-WILDCARD-ANY
+  set community EBGP-PEER additive
+  set community EBGP-PEER-HUBSITE-SVL additive
+end-policy
+!
+route-policy EBGP6-PEER-SANITY-OUT
+  if ((destination in EBGP6-PEER-BOGONS) or (destination in EBGP6-PEER-OTHER-UNDESIRABLES)) then
+    drop
+  elseif (not destination in EBGP6-PEER-TOO-SPECIFIC) then
+    pass
+  else
+    drop
+  endif
+end-policy
+!
+route-policy EBGP6_PEER_SVL-PNI_IN
+  apply EBGP6-PEER-SANITY-IN
+  set local-preference 45
+  delete community in EBGP-CUST-WILDCARD-ANY
+  set community EBGP-PEER additive
+  set community EBGP-PEER-HUBSITE-SVL additive
+end-policy
+!
+route-policy EBGP_PEER_SVL-PNI_OUT
+  apply EBGP-PEER-SANITY-OUT
+  if (community matches-any EBGP-CUST-NOEXP) then
+    drop
+  elseif (community matches-any EBGP-CUST-EXP-PEER) then
+    pass
+  else
+    drop
+  endif
+end-policy
+!
+route-policy EBGP6_PEER_SVL-PNI_OUT
+  apply EBGP6-PEER-SANITY-OUT
+  if (community matches-any EBGP-CUST-NOEXP) then
+    drop
+  elseif (community matches-any EBGP6-CUST-EXP-PEER) then
+    pass
+  else
+    drop
+  endif
+end-policy
+!
+route-policy EBGP-PEER-DENY-MAINT-IN
+  drop
+end-policy
+!
+route-policy ddos_mitigation_cust_v4($cust_v4_ddos_ISP_A_CP, $cust_v4_ddos_ISP_A, $cust_v4_ddos_DDOS_A_CP, $cust_v4_ddos_DDOS_A, $cust_v4_ddos_DDOS)
+  if (destination in $cust_v4_ddos_DDOS_A) then
+    apply ddos_bgp_standard
+    set community ddos-level3-DDOS-backbone additive
+    set community (1525:65439, 1525:65436, 1525:65438, 1525:65511) additive
+    done
+  elseif (destination in $cust_v4_ddos_DDOS) then
+    apply ddos_bgp_standard
+    set community ddos-level3-DDOS-backbone additive
+    set community (1525:65511) additive
+    done
+  elseif (destination in $cust_v4_ddos_DDOS_A_CP) then
+    apply ddos_bgp_standard
+    set community ddos-level3-DDOS-backbone additive
+    set community (1525:65436, 1525:65438, 1525:65439, 1525:65511) additive
+    set community ddos-trust-CP additive
+    done
+  elseif (destination in $cust_v4_ddos_ISP_A) then
+    apply ddos_bgp_standard
+    set community ddos-level3-ISP-backbone additive
+    set community (1525:65436, 1525:65438, 1525:65439, 1525:65511) additive
+    done
+  elseif (destination in $cust_v4_ddos_ISP_A_CP) then
+    apply ddos_bgp_standard
+    set community ddos-level3-ISP-backbone additive
+    set community (1525:65436, 1525:65438, 1525:65439, 1525:65511) additive
+    set community ddos-trust-CP additive
+    done
+  else
+    pass
+  endif
+end-policy
+!
+route-policy originate-internal-ipv6
+  set community (1525:1525, 1525:65298, 1525:65436, 1525:65438, 1525:65498, 1523:65418, 1523:65436, 1523:65438, 1523:1523)
+  set origin igp
+end-policy
+!
+route-policy EBGP-PEER-DENY-MAINT-OUT
+  drop
+end-policy
+!
+route-policy EBGP6-PEER-DENY-MAINT-IN
+  drop
+end-policy
+!
+route-policy originate-conditional-v6
+  if destination in dc-bbone-prefixes-v6 and tag is 64725 then
+    set community (1525:65436, 1525:65438, 1525:65530)
+    set origin igp
+    prepend as-path 64725
+  else
+    drop
+  endif
+end-policy
+!
+route-policy redistribute-static-isis
+  if destination in remote-router-loopbacks then
+    pass
+  else
+    drop
+  endif
+end-policy
+!
+route-policy EBGP6-PEER-DENY-MAINT-OUT
+  drop
+end-policy
+!
+route-policy redistribute-static-isis6
+  set level level-2
+  if destination in remote-router-loopbacks6 then
+    pass
+  else
+    drop
+  endif
+end-policy
+!
+route-policy redistribute-connected-isis
+  if destination in deny-connected-isis then
+    drop
+  else
+    pass
+  endif
+end-policy
+!
+route-policy EBGP-PEER-AS16509-SVL-PNI-IN
+  apply EBGP_PEER_SVL-PNI_IN
+  if (as-path in EBGP-PEER-AS16509-403-PERMIT-PATHS) then
+    set local-preference 71
+    delete community in EBGP-CUST-WILDCARD-ANY
+    set community EBGP-PEER additive
+    set community EBGP-PEER-HUBSITE-SVL additive
+    pass
+  endif
+  pass
+end-policy
+!
+route-policy redistribute-connected-isis6
+  if destination in deny-connected-isis6 then
+    drop
+  else
+    pass
+  endif
+end-policy
+!
+route-policy EBGP-PEER-AS16509-SVL-PNI-OUT
+  apply EBGP_PEER_SVL-PNI_OUT
+  pass
+end-policy
+!
+route-policy EBGP6-PEER-AS16509-SVL-PNI-IN
+  apply EBGP6_PEER_SVL-PNI_IN
+  set local-preference 70
+end-policy
+!
+route-policy EBGP6-PEER-AS16509-SVL-PNI-OUT
+  apply EBGP6_PEER_SVL-PNI_OUT
+  pass
+end-policy
+!
+route-policy originate-internal-ipv6-no-export
+  set community (1525:1525, 1525:65535, 1523:65535)
+  set origin igp
+end-policy
+!
+
+router static
+ address-family ipv4 unicast
+  0.0.0.0/0 MgmtEth0/RP0/CPU0/0 10.0.2.2
+  31.31.31.31/32 GigabitEthernet0/0/0/1 11.7.1.2
+ !
+!
+router ospf 1
+ area 0
+  interface Loopback0
+   passive enable
+  !
+  interface GigabitEthernet0/0/0/1
+   cost 1
+  !
+ !
+ area 1
+ !
+!
+as-format asdot
+router bgp 65001
+ address-family ipv4 unicast
+ !
+ address-family ipv4 multicast
+ !
+ neighbor-group IBGP
+  remote-as 65001
+  update-source Loopback0
+  address-family ipv4 unicast
+  !
+ !
+ neighbor 11.7.1.2
+  use neighbor-group IBGP
+ !
+!
+ssh server v2
+ssh server vrf default
+ssh server netconf vrf default
+grpc
+ port 57777
+!
+xml agent
+ vrf default
+ !
+!
+netconf-yang agent
+ ssh
+!
+end

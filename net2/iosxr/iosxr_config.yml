@@ -1,0 +1,69 @@
+---
+# tasks file for roles/iosplay
+#
+#
+- hosts: iosxr01
+  tasks:
+    - name: Initial configs
+      iosxr_config:
+          src: init_prefix_set.j2
+      register: result
+      
+    - debug:
+          msg: "{{ result }}"
+
+    - name: Change prefix set
+      iosxr_config:
+          src: change_prefix_set.j2
+      register: result
+      
+    - debug:
+          msg: "{{ result }}"
+
+    - name: Change prefix set
+      iosxr_config:
+          src: change_prefix_set.j2
+      register: result
+
+    - name: Play whole file
+      iosxr_config:
+          src: new_as_path.txt
+      register: result
+      tags: full_config
+      
+    - debug:
+          msg: "{{ result }}"
+
+      
+    - name: Play Policy
+      iosxr_config:
+          src: rp.txt
+      register: result
+      tags: rp_config
+      
+    - debug:
+          msg: "{{ result }}"
+
+    - name: Play Policy
+      iosxr_config:
+          src: route_policy.j2
+      register: result
+      tags: rp_it
+      
+    - debug:
+          msg: "{{ result }}"
+
+    - name: Play Policy
+      iosxr_config:
+          src: route_policy_clean.j2
+      register: result
+      tags: rp_clean
+      
+    - debug:
+          msg: "{{ result }}"
+
+    - name: access-list
+      iosxr_config:
+        src: access_list.j2
+      register: result
+      tags: acl

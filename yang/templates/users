@@ -1,0 +1,5 @@
+{% for user in users %}
+set system login user {{ user['name'] }} level '{{ user['level'] }}'
+# If I remove the following line it works:
+set system login user {{ user['name'] }} authentication encrypted-password '{{ user['password'] }}'
+{% endfor %}

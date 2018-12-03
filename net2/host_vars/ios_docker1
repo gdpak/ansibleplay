@@ -1,0 +1,11 @@
+ansible_connection: network_cli
+ansible_network_os: ios
+ansible_user: cisco
+ansible_ssh_pass: redhat1234
+cli:                                                                                                                             
+  host: "{{ ansible_host }}"                                                                                                     
+  username:  root                                                                        
+  password:  root                                                                  
+  transport: cli 
+
+iosxr_loop100_ip: 100.1.1.1

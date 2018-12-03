@@ -1,0 +1,7 @@
+---
+- name: UPDATE VLAN20 INTERFACE
+  ios_config:
+    lines:
+      - interface loopback100
+      - description configured by handler
+  notify: SAVE

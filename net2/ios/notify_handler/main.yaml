@@ -1,0 +1,35 @@
+# main.yaml
+---
+- hosts: all
+  gather_facts: no
+  strategy: free
+  serial: 1
+    
+  tasks:
+    - name: GET FACTS
+      failed_when: "'zone security TRUST' in ansible_net_config"
+      ios_facts:
+        gather_subset:
+          - hardware
+          - interfaces
+          - config
+
+    - debug: var=ansible_net_model
+
+    - name: ROUTER
+      when: "'2960' not in ansible_net_model and '3560' not in ansible_net_model and '3850' not in ansible_net_model"
+      block:
+        - name: CSR INCLUDE
+          when: "'CSR' in ansible_net_model"
+          include_tasks: csr.yaml
+
+        - name: ISR4k INCLUDE
+          when: "'ISR4331' in ansible_net_model"
+          include_tasks: "isr4k-zonefix.yaml"
+
+  handlers:
+    - name: SAVE
+      ios_command:
+        commands:
+          - "show version\r\r\r\r\r\r\r"
+

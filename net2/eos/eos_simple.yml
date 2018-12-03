@@ -1,0 +1,17 @@
+---
+# tasks file for roles/iosplay
+#
+#
+- hosts: veos1
+  tasks:
+    - name: show version
+      eos_vrf:
+          name : batman
+          rd: "65535:1"
+          interfaces: 'Ethernet 3'
+          state: present
+          provider: '{{ eapi }}'
+      become: yes
+      become_method: enable
+      register: result
+      

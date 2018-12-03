@@ -1,0 +1,25 @@
+---
+# tasks file for roles/iosplay
+#
+#
+- hosts: iosl201
+  tasks:
+     - name: configure ios l2 interface
+       ios_l2_interface:
+         name: GigabitEthernet0/2
+         mode: trunk
+         native_vlan: 10
+         trunk_allowed_vlans: 3-5
+       register: result
+      
+     - debug:
+          msg: "{{ result }}"
+
+     - name: CONFIRM THAT GI0/2 IS IN TRUNK MODE FOR NATIVE VLAN 10 AND TRUNKED VLANS 3-5
+       ios_command:
+         commands:
+           - show run int gi0/2
+         match: all
+         wait_for:
+           - result[0] contains "switchport trunk native vlan 10"
+           - result[0] contains "switchport trunk allowed vlan 3-5"

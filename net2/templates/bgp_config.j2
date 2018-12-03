@@ -1,0 +1,21 @@
+vrf 3goss
+ address-family ipv4 unicast
+  import route-target
+     64444:8883
+     64444:8891
+    !
+  export route-target
+     64444:8883
+     64444:8891
+    !
+ !
+!
+router bgp 64444
+ vrf 3goss
+  rd 64444:8883
+  address-family ipv4 unicast
+   redistribute connected
+   redistribute static
+  !
+ !
+!

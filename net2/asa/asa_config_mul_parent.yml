@@ -1,0 +1,19 @@
+---
+# tasks file for roles/iosplay
+#
+#
+- hosts: asa01
+  tasks:
+    - name: config dns server
+      asa_config:
+          lines:
+              - set connection timeout idle 1:00:00 dcd 0:00:10 3
+          match: strict
+          parents: ['policy-map global_policy', 'class global-class']
+          context: 'ASA-1'
+          replace: block
+      register: result
+      
+    - debug:
+          msg: "{{ result }}"
+

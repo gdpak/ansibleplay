@@ -1,0 +1,8 @@
+- hosts: ovs2
+  tasks:
+    - name: Create bridge
+      openvswitch_bridge:
+        bridge: br-test
+        fail_mode:
+      become: true
+      register: result

@@ -1,0 +1,8 @@
+---
+######
+# ASA CI tests
+
+- hosts: asa01
+  tasks:
+    - name: Include ASA CI tests
+      include_tasks: sublevel_strict_mul_parents.yaml

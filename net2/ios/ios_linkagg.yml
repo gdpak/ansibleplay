@@ -1,0 +1,24 @@
+---
+# tasks file for roles/iosplay
+#
+#
+- hosts: csr01
+  vars:
+     interface_prefix: 'GigabitEthernet'
+     pc_start: 3
+     pc_end: 3
+
+  tasks:
+     - name: Setup aggregates
+       ios_linkagg:
+           group: "{{ item | int + 1 }}"
+           mode: active
+           members:
+               - "{{ interface_prefix }}{{ pc_start  | int + (item | int) * 2 }}"
+               - "{{ interface_prefix }}{{ pc_start | int + (item | int) * 2 + 1 }}"
+       register: result
+       with_sequence: start=0 end="{{ ((1 + pc_end - pc_start)/2) | int }}"
+      
+     - debug:
+          msg: "{{ result }}"
+

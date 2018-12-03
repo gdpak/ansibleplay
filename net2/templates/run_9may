@@ -1,0 +1,138 @@
+!! IOS XR Configuration version = 6.1.2
+!! Last configuration change at Sat Apr 21 08:11:33 2018 by vagrant
+!
+taskgroup priv1
+ task read acl
+ task execute basic-services
+!
+telnet vrf default ipv4 server max-servers 10
+username vagrant
+ group root-lr
+ group cisco-support
+ secret 5 $1$Vq36$trKjMVaD/QNTShlBIo9XX/
+!
+username ansible
+ group netadmin
+ password 7 1513051F0D282721
+!
+username root
+ group root-lr
+ group cisco-support
+ password 7 02140B541F
+!
+tpa
+ address-family ipv4
+  update-source MgmtEth0/RP0/CPU0/0
+ !
+!
+interface Loopback0
+ ipv4 address 11.21.21.23 255.255.255.255
+!
+interface Loopback888
+ description test for ansible
+ shutdown
+!
+interface Loopback999
+ description this is a test interface for prefix-set
+!
+interface MgmtEth0/RP0/CPU0/0
+ ipv4 address dhcp
+!
+interface GigabitEthernet0/0/0/0
+ description test-interface-0
+ mtu 512
+ ipv4 address 11.1.1.3 255.255.255.0
+ speed 100
+ duplex half
+!
+interface GigabitEthernet0/0/0/1
+ description test_interface_1
+ ipv4 address 11.7.1.1 255.255.255.0
+!
+interface GigabitEthernet0/0/0/2
+ description test-interface
+ mtu 512
+ ipv4 address 11.19.2.1 255.255.255.0
+!
+prefix-set abc
+  1.1.1.1/24
+end-set
+!
+prefix-set myprefix
+  11.1.1.1/23,
+  12.1.1.3/25,
+  12.1.1.3/25
+end-set
+!
+prefix-set ebpg_filter
+end-set
+!
+as-path-set myaspathset
+  ios-regex '_1142$',
+  ios-regex '_12$',
+  ios-regex '_12$'
+end-set
+!
+as-path-set EBGP-PEER-AS16509-403-PERMIT-PATHS
+  ios-regex '^1116_8075_'
+end-set
+!
+route-policy abc
+  pass
+end-policy
+!
+route-policy POLICY2
+end-policy
+!
+route-policy pass-all
+  pass
+end-policy
+!
+router static
+ address-family ipv4 unicast
+  0.0.0.0/0 MgmtEth0/RP0/CPU0/0 10.0.2.2
+  31.31.31.31/32 GigabitEthernet0/0/0/1 11.7.1.2
+ !
+!
+router ospf 1
+ area 0
+  interface Loopback0
+   passive enable
+  !
+  interface GigabitEthernet0/0/0/1
+   cost 1
+  !
+ !
+ area 1
+ !
+!
+as-format asdot
+router bgp 65001
+ address-family ipv4 unicast
+ !
+ address-family ipv4 multicast
+ !
+ neighbor-group IBGP
+  remote-as 65001
+  update-source Loopback0
+  address-family ipv4 unicast
+  !
+ !
+ neighbor 11.7.1.2
+  use neighbor-group IBGP
+ !
+!
+ssh server v2
+ssh server vrf default
+ssh server netconf vrf default
+grpc
+ port 57777
+!
+xml agent
+ vrf default
+ !
+!
+netconf-yang agent
+ ssh
+!
+end

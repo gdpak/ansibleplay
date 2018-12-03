@@ -1,0 +1,103 @@
+---
+# tasks file for roles/iosplay
+#
+#
+- hosts: iosxr01
+  tasks:
+    - name: copy file from controller to iosxr
+      net_put:
+          src: 'nonascii.bin'
+          dest: '/misc/scratch/nonascii.bin'
+#mode: 'template'
+      register: result
+      
+    - debug:
+          msg: "{{ result }}"
+
+- hosts: nxos01
+  tasks:
+    - name: copy file from controller to nxos + scp (Default)
+      net_put:
+          src: nxos_ansible.cfg  
+      register: result
+      tags: basic
+
+    - debug:
+          msg: "{{ result }}"
+
+    - name: copy file from controller to nxos + dest specified
+      net_put:
+          src: nxos_ansible.cfg 
+          dest: 'bootflash:nxos_24_04_2018.cfg'
+      register: result
+      tags: dest
+      
+    - debug:
+          msg: "{{ result }}"
+
+    - name: copy file from controller to nxos + sftp protocol
+      net_put:
+          src: nxos_ansible.cfg 
+          protocol: sftp 
+      register: result
+      tags: sftp
+      
+    - debug:
+          msg: "{{ result }}"
+
+    - name: copy large config file
+      net_put:
+          src: 2mb_config.cfg
+      register: result
+      tags: large
+      
+    - debug:
+          msg: "{{ result }}"
+
+- hosts: csr01 ios01
+  tasks:
+    - name: copy file from controller to ios + scp (Default)
+      net_put:
+          src: xaa
+      register: result
+      tags: basic_put
+- hosts: ios02
+  tasks:
+    - name: copy file from controller to ios + scp (Default)
+      net_put:
+          src: aios.cfg  
+      register: result
+      tags: basic
+
+    - debug:
+          msg: "{{ result }}"
+
+    - name: copy file from ios to ansible ctrl
+      net_get:
+          src: 'nonascii.bin'
+      register: result
+      tags: basic_get
+
+    - debug:
+          msg: "{{ result }}"
+
+- hosts: iosxr02
+  tasks:
+    - name: copy file from controller to iosxr02 + scp (Default)
+      net_put:
+          src: iosxr.cfg
+          dest: 'disk0:/aios1.cfg'
+      register: result
+      tags: basic
+
+    - debug:
+          msg: "{{ result }}"
+
+    - name: copy file from iosxr to ansible ctrl
+      net_get:
+          src: '/misc/scratch/a.cfg'
+      register: result
+      tags: basic_get
+
+    - debug:
+          msg: "{{ result }}"

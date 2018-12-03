@@ -1,0 +1,17 @@
+---
+# tasks file for roles/iosplay
+#
+#
+- hosts: asa01
+  tasks:
+    - name: config dns server
+      asa_config:
+          lines:
+              - name-server 8.8.8.8
+          parents: ['dns server-group DefaultDNS']
+          save: yes
+      register: result
+      
+    - debug:
+          msg: "{{ result }}"
+

@@ -1,0 +1,17 @@
+---
+# tasks file for roles/iosplay
+#
+#
+- hosts: rtios
+  tasks:
+    - name: config inteface on loopback911
+      ios_config:
+          lines:
+              - ip address 119.31.1.1 255.255.255.256
+          parents: interface Loopback911
+      check_mode: 1
+      register: result
+      
+    - debug:
+          msg: "{{ result }}"
+

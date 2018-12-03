@@ -1,0 +1,318 @@
+prefix-set null
+  137.1.16.255/32
+end-set
+!
+prefix-set default-only
+  0.0.0.0/0
+end-set
+!
+prefix-set cust-announce
+end-set
+!
+prefix-set cust-ddos-DDOS
+end-set
+!
+prefix-set cust-no-export
+end-set
+!
+prefix-set cust-ddos-ISP-A
+end-set
+!
+prefix-set default-only-v6
+  ::/0
+end-set
+!
+prefix-set my-new-empty-set
+end-set
+!
+prefix-set EBGP-PEER-BOGONS
+  0.0.0.0/0,
+  0.0.0.0/8 le 32,
+  10.0.0.0/8 le 32,
+  127.0.0.0/8 le 32,
+  169.254.0.0/16 le 32,
+  172.16.0.0/12 le 32,
+  192.0.0.0/24 le 32,
+  192.0.2.0/24 le 32,
+  192.168.0.0/16 le 32,
+  198.18.0.0/15 le 32,
+  224.0.0.0/4 le 32,
+  240.0.0.0/4 le 32
+end-set
+!
+prefix-set cust-announce-v6
+end-set
+!
+prefix-set cust-ddos-DDOS-A
+end-set
+!
+prefix-set acme_DC_Internal
+  137.1.0.0/16,
+  137.1.16.0/24,
+  137.1.18.0/24,
+  137.1.20.0/24,
+  137.1.22.0/24,
+  137.1.23.0/24,
+  137.1.24.0/24,
+  137.1.29.0/24,
+  137.1.30.0/24,
+  137.1.31.0/24,
+  137.1.32.0/21,
+  137.1.40.0/22,
+  209.1.0.0/16
+end-set
+!
+prefix-set EBGP6-PEER-BOGONS
+  2001:db8::/32 le 128,
+  3ffe::/16 le 128,
+  ::/8 le 128,
+  fe00::/9 le 128,
+  ff00::/8 le 128
+end-set
+!
+prefix-set cust-no-export-v6
+end-set
+!
+prefix-set Conditional_Routes
+  8.8.8.0/24,
+  7.0.0.0/8,
+  52.8.0.0/16,
+  31.13.64.0/18,
+  4.0.0.0/9
+end-set
+!
+prefix-set cust-ddos-ISP-A-CP
+end-set
+!
+prefix-set cust-ddos-DDOS-A-CP
+end-set
+!
+prefix-set deny-connected-isis
+  10.0.0.0/8 ge 8,
+  100.64.0.0/10 ge 10,
+  127.0.0.0/8 ge 8,
+  169.254.0.0/16 ge 16,
+  172.16.0.0/12 ge 12,
+  192.0.0.0/24 ge 24,
+  192.0.2.0/24 ge 24,
+  198.18.0.0/15 ge 15,
+  192.168.0.0/16 ge 16
+end-set
+!
+prefix-set acme_DC_Internal-V6
+  2001:f480::/32
+end-set
+!
+prefix-set cust-announce-backup
+end-set
+!
+prefix-set dc-bbone-prefixes-v6
+  2001:f480:0:118::/64
+end-set
+!
+prefix-set deny-connected-isis6
+  fc00::/7 ge 7
+end-set
+!
+prefix-set cust-no-export-backup
+end-set
+!
+prefix-set EBGP-PEER-TOO-SPECIFIC
+  0.0.0.0/0 ge 25 le 32,
+  0.0.0.0/0 le 7
+end-set
+!
+prefix-set EBGP6-PEER-TOO-SPECIFIC
+  ::/0 ge 49 le 128
+end-set
+!
+prefix-set cust-announce-backup-v6
+end-set
+!
+prefix-set remote-router-loopbacks
+  137.1.39.0/24 le 32,
+  137.1.2.0/24 le 32
+end-set
+!
+prefix-set cust-no-export-backup-v6
+end-set
+!
+prefix-set defOrigConditionalRoutes
+  137.1.11.251/32,
+  137.1.11.252/32,
+  137.1.11.253/32,
+  137.1.11.254/32
+end-set
+!
+prefix-set remote-router-loopbacks6
+end-set
+!
+prefix-set EBGP-PEER-OTHER-UNDESIRABLES
+  198.17.46.0/24 le 32,
+  198.32.134.0/24 le 32,
+  198.32.146.0/24 le 32,
+  198.32.176.0/23 le 32,
+  206.72.210.0/23 le 32,
+  206.81.80.0/23 le 32,
+  206.223.123.0/24 le 32,
+  206.223.143.0/24 le 32,
+  207.231.240.0/20 le 32
+end-set
+!
+prefix-set EBGP6-PEER-OTHER-UNDESIRABLES
+  2001:504:0:3::/64 le 128,
+  2001:504:a::/64 le 128,
+  2001:504:b::/48 le 128,
+  2001:504:d::/64 le 128,
+  2001:504:12::/64 le 128,
+  2001:504:13::/64 le 128,
+  2001:504:16::/64 le 128
+end-set
+!
+as-path-set EBGP-PEER-AS16509-403-PERMIT-PATHS
+  ios-regex '^11164_8075_',
+  ios-regex '^11164_16509$',
+  ios-regex '^11164_16509_[0-9]+$',
+  ios-regex '^8075_',
+  ios-regex '^16509$',
+  ios-regex '^16509_[0-9]+$'
+end-set
+!
+community-set 190
+  1525:[65501..65517]
+end-set
+!
+community-set DC_CF_ISP
+  1525:65499
+end-set
+!
+community-set EBGP-PEER
+  # CF (Commodity Peer) All Commodity Peer routes
+  1525:65299
+end-set
+!
+community-set acme_tags
+  1520:*,
+  1521:*,
+  1525:*,
+  1523:*
+end-set
+!
+community-set acme-BB-INT
+  1525:1525
+end-set
+!
+community-set DC_AT_MEMBERS
+  1525:65438,
+  1525:65436
+end-set
+!
+community-set EBGP-CUST-EXT
+  # CF (Participant) all collaborative participant routes
+  1525:65435
+end-set
+!
+community-set EBGP-PEER-EXT
+  1525:65284
+end-set
+!
+community-set blackhole-all
+  1525:666
+end-set
+!
+community-set blackhole-isp
+  1525:667
+end-set
+!
+community-set cust-announce
+  1525:65298,
+  1525:65436,
+  1525:65438,
+  1525:65439,
+  1525:65498,
+  1525:65511,
+  1523:65418,
+  1523:65436,
+  1523:65438
+end-set
+!
+community-set ddos-trust-CP
+  1525:65260,
+  1525:65266
+end-set
+!
+community-set HPR_CF_RE_PEER
+  1523:65419
+end-set
+!
+community-set cust-no-export
+  1525:65439,
+  1525:65511,
+  1525:65535
+end-set
+!
+community-set acme_No_Export
+  1525:65535,
+  1523:65535,
+  1520:65535,
+  1521:65535
+end-set
+!
+community-set DC_AT_CUST_ONLY
+  1525:65534
+end-set
+!
+community-set EBGP-CUST-NOEXP
+  1525:65535,
+  1523:65535,
+  1520:65535,
+  1521:65535,
+  11423:65535,
+  11422:65535
+end-set
+!
+community-set EBGP-CUST-EXP-PEER
+  # AT (Commodity Peer) export to all commodity peers
+  1525:65298
+end-set
+!
+community-set EBGP6-CUST-EXP-PEER
+  1525:1525,
+  1525:65437,
+  1525:65439,
+  1525:65498,
+  1523:1523,
+  1523:65437,
+  1523:65439
+end-set
+!
+community-set acme-ISP-AUTHORIZED
+  1525:65498
+end-set
+!
+community-set DC_CF_COMMODITY_PEER
+  1525:65299
+end-set
+!
+community-set EBGP-PEER-HUBSITE-SVL
+  1525:65511
+end-set
+!
+community-set EBGP-CUST-WILDCARD-ANY
+  1523:*,
+  1525:*,
+  1521:*,
+  1520:*,
+  11423:*,
+  11422:*
+end-set
+!
+community-set ddos-level3-ISP-backbone
+  1525:65490,
+  1525:65494
+end-set
+!
+community-set ddos-level3-DDOS-backbone
+  202:0
+end-set
+!

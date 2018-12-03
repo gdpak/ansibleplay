@@ -1,0 +1,29 @@
+- hosts: fdm1
+  tasks:
+    - name: Create a access rule
+      ftd_rest:
+        url_path: '/policy/accesspolicies/default/accessrules'
+        http_operation: 'POST'
+        content:
+          {
+            "name": "gdpak access rule",
+            "sourceNetworks": ["Ansible-network-host-1"],
+            "type": "accessrule"
+          }
+      register: result
+    
+    - set_fact: ac_rule1_id="{{ result.response.id }}"
+
+    - debug:
+        msg: "ac_rule : {{ ac_rule1_id }}"
+
+    - name: Idempotency test
+      ftd_rest:
+        url_path: '/policy/accesspolicies/default/accessrules'
+        http_operation: 'POST'
+        content:
+          {
+            "name": "gdpak access rule",
+            "sourceNetworks": ["Ansible-network-host-1"],
+            "type": "accessrule"
+          }

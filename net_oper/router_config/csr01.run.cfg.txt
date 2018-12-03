@@ -1,0 +1,211 @@
+
+!
+! Last configuration change at 18:21:54 UTC Tue Aug 14 2018 by vagrant
+!
+version 16.3
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no platform punt-keepalive disable-kernel-core
+platform console virtual
+!
+hostname Router
+!
+boot-start-marker
+boot-end-marker
+!
+!
+no logging console
+enable secret 5 $1$BEj2$Ip9KMwdMNaguR5uL7gfeA.
+enable password cisco
+!
+no aaa new-model
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+subscriber templating
+!
+!
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+crypto pki trustpoint TP-self-signed-4148927583
+ enrollment selfsigned
+ subject-name cn=IOS-Self-Signed-Certificate-4148927583
+ revocation-check none
+ rsakeypair TP-self-signed-4148927583
+!
+!
+crypto pki certificate chain TP-self-signed-4148927583
+ certificate self-signed 01
+  30820330 30820218 A0030201 02020101 300D0609 2A864886 F70D0101 05050030 
+  31312F30 2D060355 04031326 494F532D 53656C66 2D536967 6E65642D 43657274 
+  69666963 6174652D 34313438 39323735 3833301E 170D3138 30363237 30373235 
+  30385A17 0D323030 31303130 30303030 305A3031 312F302D 06035504 03132649 
+  4F532D53 656C662D 5369676E 65642D43 65727469 66696361 74652D34 31343839 
+  32373538 33308201 22300D06 092A8648 86F70D01 01010500 0382010F 00308201 
+  0A028201 0100A145 F36D409D F305A60E 381443DC 22781BFC 51890384 46039378 
+  7143A441 803C3723 AAE0493E 880BE7C4 BF82F427 F3B00B60 8D2C7C5E DACDAB57 
+  6A73A6BB C0AF2E11 E7C75E2B 9A5A4BA0 01E46DC2 EB86320B 95A79AEF 95D3503F 
+  80239047 3F072B16 BE5A5A63 97105A0C F8C6A7F2 438048E9 CE081AE0 6A836C59 
+  93DAF484 739C3776 42A355C7 CE1522BB 741A99BA 17DBB9F3 29AF5EE6 D7E4B35B 
+  266C9AF9 DA1A9A0E A4D7887C 21CF045C 7B28015E 29EA489D F48DC4A4 8483DF27 
+  DE10989D AFA438DC 200E04B6 37C95EF5 509D2BE9 54EE61CC AC4B0CFA BF543BA0 
+  3E136D1F E6F2D012 84E7FD76 21BEC823 A5127AAC A742993D 2C8F5B4F DC68F0D3 
+  C90DD9A4 470B0203 010001A3 53305130 0F060355 1D130101 FF040530 030101FF 
+  301F0603 551D2304 18301680 148B28CF 33FA49C4 8BCFB0D2 E64BCC88 892485C7 
+  D1301D06 03551D0E 04160414 8B28CF33 FA49C48B CFB0D2E6 4BCC8889 2485C7D1 
+  300D0609 2A864886 F70D0101 05050003 82010100 1030956A 094B904D FD2F6DBA 
+  AD36710D 09152F5F AEC5698B 09E7EE60 66333008 B2DE89E0 12B9DC0B A72C2D0B 
+  86ADF6CE 6F024FD3 34287924 BFAA4507 978491B6 25E47263 2330ECE7 94391986 
+  096DC8CE EDF34872 8CBAC251 DAB73B15 6C0CE1C6 198B5869 4BED3812 E071C805 
+  B6E6C64B 3535DA54 17C06CCF A04CBD05 A2F280C1 172D3254 14AEE685 5AAA2739 
+  72688F95 FB759733 29D43DC7 BB23CCE9 A64C315F 6C8DC84A 1E3D09AE 608E5B30 
+  FD61BCA7 0A6380AE FDE6A0E4 C68E3ACD 3EC57037 4C9F7224 DAD2E0B5 2E511725 
+  D9FC0748 611AA71E 6D6C113E 4CFB68CA 411E0E7D 6484B0B6 166C66A5 B5C97964 
+  12862EDD 9030EFE1 E28E6385 9758EB72 76FA5491
+  	quit
+!
+!
+!
+!
+!
+!
+!
+!
+license udi pid CSR1000V sn 92W9P3N81YQ
+diagnostic bootup level minimal
+!
+spanning-tree extend system-id
+!
+!
+username vagrant privilege 15 password 0 vagrant
+username ansible privilege 15 password 0 ansible
+!
+redundancy
+!
+!
+!
+!
+!
+!
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+! 
+! 
+! 
+! 
+! 
+! 
+!
+!
+interface GigabitEthernet1
+ no ip address
+ shutdown
+ negotiation auto
+ no mop enabled
+ no mop sysid
+!
+interface GigabitEthernet2
+ ip address 11.1.1.20 255.255.255.0
+ negotiation auto
+ no mop enabled
+ no mop sysid
+!
+interface GigabitEthernet3
+ ip address 12.1.1.20 255.255.255.0
+ ip access-group 101 in
+ negotiation auto
+ no mop enabled
+ no mop sysid
+!
+interface GigabitEthernet4
+ ip address 13.1.1.5 255.255.255.0
+ negotiation auto
+ no mop enabled
+ no mop sysid
+!
+!
+virtual-service csr_mgmt
+!
+ip forward-protocol nd
+ip http server
+ip http secure-server
+!
+ip route 20.20.20.20 255.255.255.255 13.1.1.6
+ip ssh version 2
+ip ssh pubkey-chain
+  username vagrant
+ip scp server enable
+!
+!
+access-list 101 deny   tcp 11.2.2.0 0.0.0.255 any eq www
+access-list 101 deny   tcp 11.2.2.0 0.0.0.255 any eq 443
+access-list 101 permit tcp host 11.2.2.34 any eq www
+access-list 101 permit tcp host 11.3.3.0 any eq www
+access-list 101 permit tcp host 11.3.3.0 any eq 443
+!
+!
+!
+!
+control-plane
+!
+ !
+ !
+ !
+ !
+!
+!
+!
+!
+!
+line con 0
+ stopbits 1
+line vty 0
+ login local
+line vty 1
+ login local
+ length 0
+line vty 2 4
+ login local
+!
+wsma agent exec
+!
+wsma agent config
+!
+wsma agent filesys
+!
+wsma agent notify
+!
+!
+end

@@ -1,0 +1,68 @@
+- hosts: fdm1
+  tasks:
+    - name: Create a access rule
+      ftd_rest:
+        resource: 'AccessRules'
+        operation: 'add'
+        content:
+          {
+            "name": "gdpak_access_rule",
+            "sourceNetworks": ["Ansible-network-host-1"],
+            "type": "accessrule",
+            "parentId": "default"
+          }
+      register: result
+    
+    - set_fact: ac_rule1_id="{{ result.response.id }}"
+      when: result.changed == true
+
+    - debug:
+        msg: "ac_rule : {{ ac_rule1_id }}"
+      when: result.changed == true
+
+    - name: Edit a access rule
+      ftd_rest:
+        resource: 'AccessRules'
+        operation: 'edit'
+        content:
+          {
+            "name": "gdpak_access_rule",
+            "sourceNetworks": ["Ansible-network-host-2"],
+            "type": "accessrule",
+            "parentId": "default",
+            "id" : "{{ ac_rule1_id }}"
+          }
+      register: result
+      tags: edit
+
+    - name: Get a access rule by name. Might return a list
+      ftd_rest:
+        resource: 'AccessRules'
+        operation: 'get'
+        content:
+          {
+            "name": "gdpak_access_rule",
+            "parentId": "default"
+          }
+      register: result
+      tags: get
+
+    - set_fact: ac_rule1_id="{{ item.id }}"
+      with_items:
+         "{{ result.response }}"
+      when: result.changed == true
+      tags: get_fact
+
+    - name: Delete a access rule
+      ftd_rest:
+        resource: 'AccessRules'
+        operation: 'delete'
+        content:
+          {
+            "id" : "{{ item }}",
+            "parentId" : "default"
+          }
+      with_items:
+          "{{ ac_rule1_id }}"
+      register: result
+      tags: del

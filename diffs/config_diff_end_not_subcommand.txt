@@ -1,0 +1,90 @@
+diff --git a/lib/ansible/module_utils/network/common/config.py b/lib/ansible/module_utils/network/common/config.py
+index 23b4df6..91cf116 100644
+--- a/lib/ansible/module_utils/network/common/config.py
++++ b/lib/ansible/module_utils/network/common/config.py
+@@ -31,6 +31,7 @@ import hashlib
+ from ansible.module_utils.six.moves import zip
+ from ansible.module_utils._text import to_bytes, to_native
+ from ansible.module_utils.network.common.utils import to_list
++import q
+ 
+ DEFAULT_COMMENT_TOKENS = ['#', '!', '/*', '*/', 'echo']
+ 
+@@ -227,6 +228,7 @@ class NetworkConfig(object):
+                 ancestors = [cfg]
+                 prevlevel = curlevel
+                 curlevel = 0
++                q("add =%s at top-level" % line)
+ 
+             # handle sub level commands
+             else:
+diff --git a/lib/ansible/module_utils/network/iosxr/iosxr.py b/lib/ansible/module_utils/network/iosxr/iosxr.py
+index e37a0d8..58b54c7 100644
+--- a/lib/ansible/module_utils/network/iosxr/iosxr.py
++++ b/lib/ansible/module_utils/network/iosxr/iosxr.py
+@@ -36,6 +36,7 @@ from ansible.module_utils.basic import env_fallback
+ from ansible.module_utils.network.common.utils import to_list
+ from ansible.module_utils.connection import Connection
+ from ansible.module_utils.network.common.netconf import NetconfConnection
++import q
+ 
+ try:
+     from ncclient.xml_ import to_xml
+@@ -411,6 +412,7 @@ def load_config(module, command_filter, commit=False, replace=False,
+         cmd_filter.insert(0, 'configure terminal')
+         if admin:
+             cmd_filter.insert(0, 'admin')
++        q(cmd_filter)
+         conn.edit_config(cmd_filter)
+ 
+         if module._diff:
+diff --git a/lib/ansible/modules/network/iosxr/iosxr_config.py b/lib/ansible/modules/network/iosxr/iosxr_config.py
+index 9f0153e..9e1ca12 100644
+--- a/lib/ansible/modules/network/iosxr/iosxr_config.py
++++ b/lib/ansible/modules/network/iosxr/iosxr_config.py
+@@ -170,6 +170,7 @@ from ansible.module_utils.basic import AnsibleModule
+ from ansible.module_utils.network.iosxr.iosxr import load_config, get_config
+ from ansible.module_utils.network.iosxr.iosxr import iosxr_argument_spec, copy_file
+ from ansible.module_utils.network.common.config import NetworkConfig, dumps
++import q
+ 
+ DEFAULT_COMMIT_COMMENT = 'configured by iosxr_config'
+ 
+@@ -225,12 +226,16 @@ def run(module, result):
+     check_mode = module.check_mode
+ 
+     candidate_config = get_candidate(module)
+-    running_config = get_running_config(module)
++    #running_config = get_running_config(module)
+ 
+     commands = None
+     if match != 'none' and replace != 'config':
++        '''
+         commands = candidate_config.difference(running_config, path=path, match=match, replace=replace)
++        '''
++        q("unexpected path1")
+     elif replace_config:
++        '''
+         can_config = candidate_config.difference(running_config, path=path, match=match, replace=replace)
+         candidate = dumps(can_config, 'commands').split('\n')
+         run_config = running_config.difference(candidate_config, path=path, match=match, replace=replace)
+@@ -242,8 +247,11 @@ def run(module, result):
+                 module.fail_json(msg='Copy of config file to the node failed')
+ 
+             commands = ['load harddisk:/ansible_config.txt']
++        '''
++        q("unexpected path")
+     else:
+         commands = candidate_config.items
++        q(commands)
+ 
+     if commands:
+         if not replace_config:
+@@ -259,6 +267,7 @@ def run(module, result):
+             result['commands'] = commands
+ 
+         commit = not check_mode
++        q(commands)
+         diff = load_config(module, commands, commit=commit, replace=replace_config, comment=comment, admin=admin)
+         if diff:
+             result['diff'] = dict(prepared=diff)

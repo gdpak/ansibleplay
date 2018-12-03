@@ -1,0 +1,22 @@
+---
+# tasks file for roles/iosplay
+#
+#
+- hosts: iosxr01
+  vars:
+      prefix_set: test_set
+  tasks:
+  - name: Configure Prefix-Set "{{ prefix_set }}"
+    iosxr_config:
+      lines:
+        - "{{ item }}"
+        - end-set
+      parents: prefix-set {{ prefix_set }}
+    with_items:
+      - 1.1.1.1/24 
+      - 2.2.2.2/24
+      - 3.3.3.3/24
+      - 4.4.4.4/24
+      - 5.5.5.5/24
+      - 6.6.6.6/24
+

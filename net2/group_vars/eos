@@ -1,0 +1,15 @@
+ansible_connection: network_cli
+ansible_network_os: eos
+ansible_user: ansible
+ansible_ssh_pass: ansible
+ansible_become: yes
+ansible_become_method: enable
+
+eapi:
+   host:  "{{ ansible_host }}"
+   transport: eapi
+   username: ansible
+   password: ansible
+   use_ssl: no
+   port: 80
+   validate_certs: false

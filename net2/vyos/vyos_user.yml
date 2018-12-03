@@ -1,0 +1,17 @@
+---
+- hosts: vyos_eng_node2
+  connection: network_cli
+  tasks:
+      - debug:
+          var: users
+      - vyos_config:
+          src: templates/users
+          save: yes
+  vars:
+      users:
+         - name: esa
+           level: admin
+           password: "abc"
+         - name: vyos
+           level: admin
+           password: "abc"

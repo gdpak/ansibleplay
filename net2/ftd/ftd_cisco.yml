@@ -1,0 +1,17 @@
+- hosts: fdm1
+  tasks:
+    - name: Create a access rule
+      ftd_configuration:
+        operation: "addNetworkObject"
+        data:
+          name: "Ansible-network-host"
+          description: "From Ansible with love"
+          subType: "HOST"
+          value: "192.168.2.0"
+          dnsResolution: "IPV4_AND_IPV6"
+          type: "networkobject"
+          isSystemDefined: false
+      register: result
+
+    - set_fact: api_ver="{{ ansible_httpapi_ftd_token_path }}"
+

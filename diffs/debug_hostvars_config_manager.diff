@@ -1,0 +1,499 @@
+diff --git a/bin/ansible-connection b/bin/ansible-connection
+index 43b3675..09656a5 100755
+--- a/bin/ansible-connection
++++ b/bin/ansible-connection
+@@ -105,10 +105,6 @@ class ConnectionProcess(object):
+             self.connection.set_options(var_options=variables)
+             self.connection._connect()
+ 
+-            # implementation plugins are updated while connection initialization
+-            if hasattr(self.connection, 'set_implementation_plugin_options'):
+-                self.connection.set_implementation_plugin_options(var_options=variables)
+-
+             self.connection._socket_path = self.socket_path
+             self.srv.register(self.connection)
+             messages.extend(sys.stdout.getvalue().splitlines())
+diff --git a/lib/ansible/config/manager.py b/lib/ansible/config/manager.py
+index ab0db12..cddf613 100644
+--- a/lib/ansible/config/manager.py
++++ b/lib/ansible/config/manager.py
+@@ -3,7 +3,7 @@
+ 
+ from __future__ import (absolute_import, division, print_function)
+ __metaclass__ = type
+-
++import q
+ import io
+ import os
+ import os.path
+@@ -297,9 +297,11 @@ class ConfigManager(object):
+ 
+         options = {}
+         defs = self.get_configuration_definitions(plugin_type, name)
++        if plugin_type == 'httpapi':
++            q(defs)
+         for option in defs:
+             options[option] = self.get_config_value(option, plugin_type=plugin_type, plugin_name=name, keys=keys, variables=variables, direct=direct)
+-
++        
+         return options
+ 
+     def get_plugin_vars(self, plugin_type, name):
+@@ -309,6 +311,8 @@ class ConfigManager(object):
+             if 'vars' in pdef and pdef['vars']:
+                 for var_entry in pdef['vars']:
+                     pvars.append(var_entry['name'])
++        if plugin_type == 'httpapi':
++            q(pvars)
+         return pvars
+ 
+     def get_configuration_definitions(self, plugin_type=None, name=None):
+diff --git a/lib/ansible/constants.py b/lib/ansible/constants.py
+index 250b27a..79fe78c 100644
+--- a/lib/ansible/constants.py
++++ b/lib/ansible/constants.py
+@@ -104,7 +104,7 @@ DEFAULT_REMOTE_PASS = None
+ DEFAULT_SUBSET = None
+ DEFAULT_SU_PASS = None
+ # FIXME: expand to other plugins, but never doc fragments
+-CONFIGURABLE_PLUGINS = ('cache', 'callback', 'connection', 'inventory', 'lookup', 'shell', 'cliconf')
++CONFIGURABLE_PLUGINS = ('cache', 'callback', 'connection', 'inventory', 'lookup', 'shell', 'cliconf', 'httpapi')
+ # NOTE: always update the docs/docsite/Makefile to match
+ DOCUMENTABLE_PLUGINS = CONFIGURABLE_PLUGINS + ('module', 'strategy', 'vars')
+ IGNORE_FILES = ("COPYING", "CONTRIBUTING", "LICENSE", "README", "VERSION", "GUIDELINES")  # ignore during module search
+diff --git a/lib/ansible/plugins/connection/__init__.py b/lib/ansible/plugins/connection/__init__.py
+index d7e86e2..f173d45 100644
+--- a/lib/ansible/plugins/connection/__init__.py
++++ b/lib/ansible/plugins/connection/__init__.py
+@@ -317,6 +317,10 @@ class NetworkConnectionBase(ConnectionBase):
+                         return method
+             raise AttributeError("'%s' object has no attribute '%s'" % (self.__class__.__name__, name))
+ 
++    def _connect(self):
++        for plugin in self._implementation_plugins:
++            plugin.set_options(*self.cached_variables)
++
+     def exec_command(self, cmd, in_data=None, sudoable=True):
+         return self._local.exec_command(cmd, in_data, sudoable)
+ 
+@@ -344,14 +348,7 @@ class NetworkConnectionBase(ConnectionBase):
+ 
+     def set_options(self, task_keys=None, var_options=None, direct=None):
+         super(NetworkConnectionBase, self).set_options(task_keys=task_keys, var_options=var_options, direct=direct)
+-        self.set_implementation_plugin_options(task_keys=task_keys, var_options=var_options, direct=direct)
+-
+-    def set_implementation_plugin_options(self, task_keys=None, var_options=None, direct=None):
+-        '''
+-        initialize implementation plugin options
+-        '''
+-        for plugin in self._implementation_plugins:
+-            plugin.set_options(task_keys=task_keys, var_options=var_options, direct=direct)
++        self.cached_variables = (task_keys, var_options, direct)
+ 
+     def _update_connection_state(self):
+         '''
+diff --git a/lib/ansible/plugins/connection/httpapi.py b/lib/ansible/plugins/connection/httpapi.py
+index e651f06..135f907 100644
+--- a/lib/ansible/plugins/connection/httpapi.py
++++ b/lib/ansible/plugins/connection/httpapi.py
+@@ -149,6 +149,7 @@ from ansible.module_utils.urls import open_url
+ from ansible.playbook.play_context import PlayContext
+ from ansible.plugins.loader import cliconf_loader, httpapi_loader
+ from ansible.plugins.connection import NetworkConnectionBase
++import q
+ 
+ try:
+     from __main__ import display
+@@ -162,6 +163,7 @@ class Connection(NetworkConnectionBase):
+ 
+     transport = 'httpapi'
+     has_pipelining = True
++    allow_extras = True
+ 
+     def __init__(self, play_context, new_stdin, *args, **kwargs):
+         super(Connection, self).__init__(play_context, new_stdin, *args, **kwargs)
+@@ -206,10 +208,8 @@ class Connection(NetworkConnectionBase):
+ 
+             httpapi = httpapi_loader.get(self._network_os, self)
+             if httpapi:
+-                display.vvvv('loaded API plugin for network_os %s' % self._network_os, host=self._play_context.remote_addr)
++                display.vvvv('loaded API plugin for network_os %s' % self._network_os, host=host)
+                 self._implementation_plugins.append(httpapi)
+-                httpapi.set_become(self._play_context)
+-                httpapi.login(self.get_option('remote_user'), self.get_option('password'))
+             else:
+                 raise AnsibleConnectionFailure('unable to load API plugin for network_os %s' % self._network_os)
+ 
+@@ -220,6 +220,11 @@ class Connection(NetworkConnectionBase):
+             else:
+                 display.vvvv('unable to load cliconf for network_os %s' % self._network_os)
+ 
++            super(Connection, self)._connect()
++
++            httpapi.set_become(self._play_context)
++            httpapi.login(self.get_option('remote_user'), self.get_option('password'))
++
+             self._connected = True
+ 
+     def close(self):
+diff --git a/lib/ansible/plugins/connection/netconf.py b/lib/ansible/plugins/connection/netconf.py
+index 697f7ed..93468f1 100644
+--- a/lib/ansible/plugins/connection/netconf.py
++++ b/lib/ansible/plugins/connection/netconf.py
+@@ -307,6 +307,8 @@ class Connection(NetworkConnectionBase):
+             display.display('unable to load netconf plugin for network_os %s, falling back to default plugin' % self._network_os)
+         self._implementation_plugins.append(netconf)
+ 
++        super(Connection, self)._connect()
++
+         return 0, to_bytes(self._manager.session_id, errors='surrogate_or_strict'), b''
+ 
+     def close(self):
+diff --git a/lib/ansible/plugins/connection/network_cli.py b/lib/ansible/plugins/connection/network_cli.py
+index 7dfdcbb..e649c32 100644
+--- a/lib/ansible/plugins/connection/network_cli.py
++++ b/lib/ansible/plugins/connection/network_cli.py
+@@ -300,6 +300,8 @@ class Connection(NetworkConnectionBase):
+             else:
+                 display.vvvv('unable to load cliconf for network_os %s' % self._network_os)
+ 
++            super(Connection, self)._connect()
++
+             self.receive(prompts=self._terminal.terminal_initial_prompt, answer=self._terminal.terminal_initial_answer,
+                          newline=self._terminal.terminal_inital_prompt_newline)
+ 
+diff --git a/lib/ansible/plugins/httpapi/ftd.py b/lib/ansible/plugins/httpapi/ftd.py
+index f88c5e1..5442728 100644
+--- a/lib/ansible/plugins/httpapi/ftd.py
++++ b/lib/ansible/plugins/httpapi/ftd.py
+@@ -2,35 +2,52 @@
+ # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
+ 
+ from __future__ import (absolute_import, division, print_function)
++
+ __metaclass__ = type
+ 
++DOCUMENTATION = """
++---
++author: Ansible Networking Team
++httpapi : ftd
++short_description: Use httpapi to run command on Cisco device
++description:
++  - This connection plugin provides a connection to remote devices over a
++    HTTP(S)-based api.
++version_added: "2.7"
++options:
++  api_version:
++    type: int
++    description:
++      - Specifies the api version of the FTD device
++    default: 2
++    vars:
++      - name: ansible_httpapi_ftd_api_version
++"""
++
+ import json
+ import os
+ import re
+-import shutil
+ 
+-from ansible.module_utils._text import to_text
++from ansible.module_utils.basic import to_text
++from ansible.errors import AnsibleConnectionFailure
++from ansible.module_utils.network.ftd.fdm_swagger_client import FdmSwaggerParser, SpecProp, FdmSwaggerValidator
++from ansible.module_utils.network.ftd.common import HTTPMethod, ResponseParams
+ from ansible.module_utils.six.moves.urllib.error import HTTPError
+ from ansible.module_utils.six.moves.urllib.parse import urlencode
+ from ansible.plugins.httpapi import HttpApiBase
+-from ansible.module_utils.six import wraps
+ from urllib3 import encode_multipart_formdata
+ from urllib3.fields import RequestField
+ from ansible.module_utils.connection import ConnectionError
+-from ansible.errors import AnsibleConnectionFailure
+-
+-try:
+-    from __main__ import display
+-except ImportError:
+-    from ansible.utils.display import Display
+-    display = Display()
++import q
++import inspect
+ 
+ BASE_HEADERS = {
+     'Content-Type': 'application/json',
+     'Accept': 'application/json'
+ }
+-API_PREFIX = "/api/fdm/v2"
+-API_TOKEN_PATH = "/fdm/token"
++API_TOKEN_PATH_ENV_VAR = 'FTD_API_TOKEN_PATH'
++DEFAULT_API_TOKEN_PATH = '/api/fdm/v2/fdm/token'
++API_SPEC_PATH = '/apispec/ngfw.json'
+ 
+ TOKEN_EXPIRATION_STATUS_CODE = 408
+ UNAUTHORIZED_STATUS_CODE = 401
+@@ -38,55 +55,85 @@ UNAUTHORIZED_STATUS_CODE = 401
+ 
+ class HttpApi(HttpApiBase):
+     def __init__(self, connection):
++        super(HttpApi, self).__init__(connection)
+         self.connection = connection
+-        self.access_token = False
+-        self.refresh_token = False
+-
+-    def login(self, username=None, password=None):
+-        # Clean any old auth if present in connection plugin
+-        self.connection._auth = None
++        self.access_token = None
++        self.refresh_token = None
++        self._api_spec = None
++        self._api_validator = None
++
++    def login(self, username, password):
++        q(self.get_option('api_version'))
++        def request_token_payload(username, password):
++            return {
++                'grant_type': 'password',
++                'username': username,
++                'password': password
++            }
+ 
+-        if self.refresh_token:
+-            payload = {
++        def refresh_token_payload(refresh_token):
++            return {
+                 'grant_type': 'refresh_token',
+-                'refresh_token': self.refresh_token
++                'refresh_token': refresh_token
+             }
++
++        if self.refresh_token:
++            payload = refresh_token_payload(self.refresh_token)
++        elif username and password:
++            payload = request_token_payload(username, password)
+         else:
+-            if username and password:
+-                payload = {
+-                    'grant_type': 'password',
+-                    'username': username,
+-                    'password': password
+-                }
+-            else:
+-                raise AnsibleConnectionFailure(
+-                    'username and password are required for login'
+-                    'in absence of refresh token'
+-                )
+-        response, response_data = self.connection.send(
+-            API_PREFIX + API_TOKEN_PATH,
+-            json.dumps(payload), method='POST', headers=BASE_HEADERS
++            raise AnsibleConnectionFailure('Username and password are required for login in absence of refresh token')
++
++        dummy, response_data = self.connection.send(
++            self._get_api_token_path(), json.dumps(payload), method=HTTPMethod.POST, headers=BASE_HEADERS
+         )
++        response = self._response_to_json(response_data.getvalue())
++
+         try:
+-            self._set_token_info(response_data)
+-        except ValueError as vexc:
+-            raise ConnectionError('Did not receive access_token during Auth got'
+-                                  '{0}'.format(to_text(vexc)))
++            self.refresh_token = response['refresh_token']
++            self.access_token = response['access_token']
++        except KeyError:
++            raise ConnectionError(
++                'Server returned response without token info during connection authentication: %s' % response)
++
++    def logout(self):
++        auth_payload = {
++            'grant_type': 'revoke_token',
++            'access_token': self.access_token,
++            'token_to_revoke': self.refresh_token
++        }
++        self.connection.send(
++            self._get_api_token_path(), json.dumps(auth_payload), method=HTTPMethod.POST,
++            headers=self._authorized_headers()
++        )
++        self.refresh_token = None
++        self.access_token = None
++
++    def update_auth(self, response, response_data):
++        # With tokens, authentication should not be checked and updated on each request
++        return None
+ 
+     def send_request(self, url_path, http_method, body_params=None, path_params=None, query_params=None):
+         url = construct_url_path(url_path, path_params, query_params)
+         data = json.dumps(body_params) if body_params else None
+-
+-        response, response_data = self.connection.send(
+-            url, data, method=http_method,
+-            headers=self._authorized_headers()
+-        )
+         try:
+-            ret = json.loads(to_text(response_data.getvalue()))
+-        except:
+-            raise ConnectionError('Response was not valid JSON, got {0}'
+-                                  .format(response_data.getvalue()))
+-        return ret
++            response, response_data = self.connection.send(
++                url, data, method=http_method,
++                headers=self._authorized_headers()
++            )
++            return {
++                ResponseParams.SUCCESS: True,
++                ResponseParams.STATUS_CODE: response.getcode(),
++                ResponseParams.RESPONSE: self._response_to_json(response_data.getvalue())
++            }
++        # Being invoked via JSON-RPC, this method does not serialize and pass HTTPError correctly to the method caller.
++        # Thus, in order to handle non-200 responses, we need to wrap them into a simple structure and pass explicitly.
++        except HTTPError as e:
++            return {
++                ResponseParams.SUCCESS: False,
++                ResponseParams.STATUS_CODE: e.code,
++                ResponseParams.RESPONSE: self._response_to_json(e.read())
++            }
+ 
+     def upload_file(self, from_path, to_url):
+         url = construct_url_path(to_url)
+@@ -94,83 +141,89 @@ class HttpApi(HttpApiBase):
+             rf = RequestField('fileToUpload', src_file.read(), os.path.basename(src_file.name))
+             rf.make_multipart()
+             body, content_type = encode_multipart_formdata([rf])
++
+             headers = self._authorized_headers()
+             headers['Content-Type'] = content_type
+             headers['Content-Length'] = len(body)
+-            response, response_data = self.connection.send(
+-                url, data=body, method='POST', headers=headers
+-            )
+-            try:
+-                ret = json.loads(to_text(response_data.getvalue()))
+-            except:
+-                raise ConnectionError('Response was not valid JSON, got {0}'
+-                                      .format(response_data.getvalue()))
+-            return ret
+-
+-    def download_file(self, from_url, to_path):
+-        url = construct_url_path(from_url)
++
++            dummy, response_data = self.connection.send(url, data=body, method=HTTPMethod.POST, headers=headers)
++            return self._response_to_json(response_data.getvalue())
++
++    def download_file(self, from_url, to_path, path_params=None):
++        url = construct_url_path(from_url, path_params=path_params)
+         response, response_data = self.connection.send(
+-            url, data=None, method='GET',
++            url, data=None, method=HTTPMethod.GET,
+             headers=self._authorized_headers()
+         )
++
+         if os.path.isdir(to_path):
+             filename = extract_filename_from_headers(response.info())
+             to_path = os.path.join(to_path, filename)
+ 
+         with open(to_path, "wb") as output_file:
+-            output_file.write(to_text(response_data.getvalue()))
+-
+-    def update_auth(self, response, response_data):
+-        return None
+-
+-    def _set_token_info(self, response_data):
+-        try:
+-            token_info = json.loads(to_text(response_data.getvalue()))
+-        except ValueError:
+-            raise
+-        if 'refresh_token' in token_info:
+-            self.refresh_token = token_info['refresh_token']
+-        if 'access_token' in token_info:
+-            self.access_token = token_info['access_token']
++            output_file.write(response_data.getvalue())
+ 
+     def handle_httperror(self, exc):
+-        # Called by connection plugin when it gets HTTP Error for a request.
+-        # Connection plugin will resend this request if we return true here.
+-        if (exc.code == TOKEN_EXPIRATION_STATUS_CODE or
+-           exc.code == UNAUTHORIZED_STATUS_CODE):
+-            # Stored auth appears to be invalid, clear and retry
++        if exc.code == TOKEN_EXPIRATION_STATUS_CODE or exc.code == UNAUTHORIZED_STATUS_CODE:
+             self.connection._auth = None
+-            self.login(self.connection.get_option('remote_user'),
+-                       self.connection.get_option('password'))
++            self.login(self.connection.get_option('remote_user'), self.connection.get_option('password'))
+             return True
+-
+-        return False
++        # None means that the exception will be passed further to the caller
++        return None
+ 
+     def _authorized_headers(self):
+         headers = dict(BASE_HEADERS)
+         headers['Authorization'] = 'Bearer %s' % self.access_token
+         return headers
+ 
+-    def logout(self):
+-        # Revoke the tokens
+-        auth_payload = {
+-            'grant_type': 'revoke_token',
+-            'access_token': self.access_token,
+-            'token_to_revoke': self.refresh_token
+-        }
+-        self.connection.send(
+-            API_PREFIX + API_TOKEN_PATH, json.dumps(auth_payload),
+-            method='POST', headers=self._authorized_headers()
+-        )
+-        # HTTP error would cause exception Connection failure in connection
+-        # plugin
+-        self.refresh_token = False
+-        self.access_token = False
+-        display.vvvv("logged out successfully")
++    @staticmethod
++    def _get_api_token_path():
++        return os.environ.get(API_TOKEN_PATH_ENV_VAR, DEFAULT_API_TOKEN_PATH)
++
++    @staticmethod
++    def _response_to_json(response_data):
++        response_text = to_text(response_data)
++        try:
++            return json.loads(response_text) if response_text else {}
++        # JSONDecodeError only available on Python 3.5+
++        except getattr(json.decoder, 'JSONDecodeError', ValueError):
++            raise ConnectionError('Invalid JSON response: %s' % response_text)
++
++    def get_operation_spec(self, operation_name):
++        return self.api_spec[SpecProp.OPERATIONS].get(operation_name, None)
++
++    def get_model_spec(self, model_name):
++        return self.api_spec[SpecProp.MODELS].get(model_name, None)
++
++    def validate_data(self, operation_name, data):
++        return self.api_validator.validate_data(operation_name, data)
++
++    def validate_query_params(self, operation_name, params):
++        return self.api_validator.validate_query_params(operation_name, params)
++
++    def validate_path_params(self, operation_name, params):
++        return self.api_validator.validate_path_params(operation_name, params)
++
++    @property
++    def api_spec(self):
++        if self._api_spec is None:
++            response = self.send_request(url_path=API_SPEC_PATH, http_method=HTTPMethod.GET)
++            if response[ResponseParams.SUCCESS]:
++                self._api_spec = FdmSwaggerParser().parse_spec(response[ResponseParams.RESPONSE])
++            else:
++                raise ConnectionError('Failed to download API specification. Status code: %s. Response: %s' % (
++                    response[ResponseParams.STATUS_CODE], response[ResponseParams.RESPONSE]))
++        return self._api_spec
++
++    @property
++    def api_validator(self):
++        if self._api_validator is None:
++            self._api_validator = FdmSwaggerValidator(self.api_spec)
++        return self._api_validator
+ 
+ 
+ def construct_url_path(path, path_params=None, query_params=None):
+-    url = API_PREFIX + path
++    url = path
+     if path_params:
+         url = url.format(**path_params)
+     if query_params:

@@ -1,0 +1,13 @@
+---
+# tasks file for roles/eosplay
+#
+#- hosts: leafs
+#  tasks:
+- name: Gather Config Commands
+  eos_command:
+     commands:
+         - show version
+         - show interfaces
+  register: output
+
+

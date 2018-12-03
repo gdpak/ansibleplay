@@ -1,0 +1,20 @@
+[eos]
+eos02 ansible_host=eos02.example.net
+veos1 ansible_host=11.1.1.8
+
+[ios]
+ios02 ansible_host=ios02.example.net
+iosl202 ansible_host=iosl202.example.net
+ios_docker1 ansible_host=172.17.0.2
+ios_docker2 ansible_host=172.17.0.3
+csr01 ansible_host=11.1.1.20
+
+[vyos]
+an-vyos-02.ansible.eng.rdu2.redhat.com 
+
+[nxos]
+nxos01 ansible_host=nxos01.example.net
+
+[iosxr]
+iosxr01 ansible_host=11.1.1.3 ansible_nework_os=iosxr
+iosxr02 ansible_host=iosxr02.example.net ansible_nework_os=iosxr

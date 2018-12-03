@@ -1,0 +1,9 @@
+[ios_docker]
+ios_docker01 ansible_host=172.17.0.2
+ios_docker03 ansible_host=172.17.0.3
+
+[ios_docker:vars]
+ansible_user=cisco
+ansible_password=redhat1234
+ansible_network_os=ios
+ansible_connection=network_cli

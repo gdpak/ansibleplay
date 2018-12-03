@@ -1,0 +1,95 @@
+---
+# tasks file for roles/iosplay
+#
+#
+- hosts: iosxr01
+  tasks:
+    - name: Initial configs
+      iosxr_config:
+          src: init_prefix_set.j2
+      register: result
+      
+    - debug:
+          msg: "{{ result }}"
+
+    - name: Change prefix set
+      iosxr_config:
+          src: change_prefix_set.j2
+      register: result
+      
+    - debug:
+          msg: "{{ result }}"
+
+    - name: Change prefix set
+      iosxr_config:
+          src: change_prefix_set.j2
+      register: result
+
+    - name: Play whole file
+      iosxr_config:
+          src: new_as_path.txt
+      register: result
+      tags: full_config
+      
+    - debug:
+          msg: "{{ result }}"
+
+      
+    - name: Play Policy
+      iosxr_config:
+          src: rp.txt
+      register: result
+      tags: rp_config
+      
+    - debug:
+          msg: "{{ result }}"
+
+    - name: Play Policy
+      iosxr_config:
+          src: route_policy.j2
+      register: result
+      tags: rp_it
+      
+    - debug:
+          msg: "{{ result }}"
+
+    - name: Play Policy
+      iosxr_config:
+          src: route_policy_clean.j2
+      register: result
+      tags: rp_clean
+      
+    - debug:
+          msg: "{{ result }}"
+
+    - name: access-list
+      iosxr_config:
+        src: access_list.j2
+      register: result
+      tags: acl
+
+    - name: IT
+      iosxr_config: &delreplace
+          src: config_del_interface.txt
+          replace: config
+          backup: yes
+      register: result
+      tags: it_del
+
+    - name: IT_2
+      iosxr_config: *delreplace
+      register: result
+      tags: it_del2
+      
+    - name: IT3
+      iosxr_config: &addreplace
+          src: config_add_interface.txt
+          replace: config
+          backup: yes
+      register: result
+      tags: it_add
+
+    - name: IT_4
+      iosxr_config: *addreplace
+      register: result
+      tags: it_add2
