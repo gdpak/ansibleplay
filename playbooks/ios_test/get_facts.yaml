@@ -2,7 +2,7 @@
 # ansible-dev cli tool: auto generated template for playbook
 #
 
-- hosts: ios01
+- hosts: csr01
   #roles: {}
 
   # Playbook execution starts from here
@@ -11,3 +11,14 @@
       include_role:
         name: gdpak.cisco_ios
         tasks_from: get_facts
+      vars:
+        subset:
+          - interfaces
+        interface_state_in_facts: '(up|down|administratively down)'
+      register: ios_facts_from_role
+
+#    - name: facts from ios_facts
+#      ios_facts:
+#      register: ios_facts_from_module
+
+    - debug: msg="{{ cisco_ios }}"

@@ -1,0 +1,12 @@
+- hosts: asa1
+  tasks:
+    - name: Show command one
+      asa_command:
+        commands:
+          - "show cpu"
+        
+    - name: Show command two
+      asa_command:
+        commands:
+          - "show memory"
+

@@ -1,0 +1,32 @@
+---
+# tasks file for roles/iosplay
+#
+#
+- hosts: iosxr01
+  tasks:
+    - name: Delete interface aggregate (setup)
+      iosxr_interface:
+        aggregate:
+        - name: GigabitEthernet0/0/0/2
+        state: absent
+    
+    - name: Add interface aggregate
+      iosxr_interface:
+        aggregate:
+        - { name: GigabitEthernet0/0/0/2, mtu: 256, description: test-interface-1 }
+        speed: 100
+        duplex: full
+        state: present
+      register: result
+    
+    - assert:
+        that:
+          - 'result.changed == true'
+
+    - name: gather facts
+      iosxr_facts:
+      register: result
+      tags: facts
+
+    - debug: msg=result
+
