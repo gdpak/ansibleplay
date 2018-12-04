@@ -1,0 +1,23 @@
+- hosts: fdm1
+  tasks:
+#    - name: Get all device logging settings list
+#      ftd_configuration:
+#        operation: "getSyslogServerList"
+#      register: result
+    - name: Include vars from vars
+      include_vars:
+        file: vars/main.yaml
+
+    - name: Add a syslog server
+      ftd_configuration:
+        operation: "addSyslogServer"
+        data:
+          name: "{{ ftd_syslog_server.name }}"
+          useManagementInterface: "{{ ftd_syslog_server.useManagement }}"
+          protocol: "{{ ftd_syslog_server.protocol }}"
+          host: "{{ ftd_syslog_server.ip }}"
+          port: "{{ ftd_syslog_server.port }}"
+          type: "syslogserver"
+      register: result
+
+    - debug: msg="{{ result }}"

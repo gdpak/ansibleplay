@@ -1,0 +1,11 @@
+- hosts: fdm1
+  tasks:
+    - name: Get all device logging settings list
+      ftd_configuration:
+        operation: "getSyslogServerList"
+        query_params:
+          offset: 10
+          limit: 10
+      register: result
+
+    - debug: msg="{{ result }}"

@@ -1,0 +1,17 @@
+- hosts: fdm1
+  tasks:
+    - name: Get all device logging settings list
+      ftd_configuration:
+        operation: "getDeviceLogSettingsList"
+      register: result
+
+    - debug: msg="{{ result }}"
+
+    - name: Get syslog object
+      ftd_configuration:
+        operation: "getDeviceLogSettings"
+        path_params:
+          objId: '93a96d1a-fd4c-59af-b3a0-6a34e1e31ef1'
+      register: result
+
+    - debug: msg="{{ result }}"

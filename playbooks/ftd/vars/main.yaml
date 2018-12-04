@@ -1,0 +1,7 @@
+---
+ftd_syslog_server:
+  name: "Ansible_syslog_server1"
+  useManagement: True
+  protocol: 'UDP'
+  ip: '10.1.1.91'
+  port: 514
