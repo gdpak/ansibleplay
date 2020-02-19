@@ -1,0 +1,117 @@
+{
+        "spec": {
+        "name": "windows1",
+        "resources": {
+            "num_threads_per_core": 1,
+            "vnuma_config": {
+                "num_vnuma_nodes": 0
+            },
+            "serial_port_list": [],
+            "nic_list": [
+                {
+                    "nic_type": "NORMAL_NIC",
+                    "uuid": "5f2e7228-d990-4447-9c91-a36b81bc7ad6",
+                    "ip_endpoint_list": [
+                        {
+                            "ip": "10.15.22.139",
+                            "type": "ASSIGNED"
+                        }
+                    ],
+                    "vlan_mode": "ACCESS",
+                    "mac_address": "50:6b:8d:f8:e2:be",
+                    "subnet_reference": {
+                        "kind": "subnet",
+                        "name": "vlan.2003",
+                        "uuid": "fa9ede29-d918-4d0a-80e4-888a5c143f0d"
+                    },
+                    "is_connected": true,
+                    "trunked_vlan_list": []
+                }
+            ],
+            "num_vcpus_per_socket": 1,
+            "num_sockets": 1,
+            "disable_branding": false,
+            "enable_cpu_passthrough": false,
+            "gpu_list": [],
+            "is_agent_vm": false,
+            "memory_size_mib": 1024,
+            "boot_config": {
+                "boot_device_order_list": [
+                    "CDROM",
+                    "DISK",
+                    "NETWORK"
+                ],
+                "boot_type": "LEGACY"
+            },
+            "hardware_clock_timezone": "UTC",
+            "power_state_mechanism": {
+                "guest_transition_config": {
+                    "should_fail_on_script_failure": false,
+                    "enable_script_exec": false
+                },
+                "mechanism": "HARD"
+            },
+            "power_state": "ON",
+            "machine_type": "PC",
+            "vga_console_enabled": true,
+            "disk_list": [
+                {
+                    "uuid": "fd3f111d-3484-4e44-ba2f-969ca586dbce",
+                    "disk_size_bytes": 42949672960,
+                    "storage_config": {
+                        "storage_container_reference": {
+                            "kind": "storage_container",
+                            "uuid": "752eecd4-c53d-4252-8c85-c730428c0eb2",
+                            "name": "SelfServiceContainer"
+                        }
+                    },
+                    "device_properties": {
+                        "disk_address": {
+                            "device_index": 0,
+                            "adapter_type": "SCSI"
+                        },
+                        "device_type": "DISK"
+                    },
+                    "data_source_reference": {
+                        "kind": "image",
+                        "uuid": "6754187a-509a-4424-b1a0-f81816fa8dd3"
+                    },
+                    "disk_size_mib": 40960
+                }
+            ]
+        },
+        "cluster_reference": {
+            "kind": "cluster",
+            "name": "manolo0104",
+            "uuid": "00059e02-67e1-af62-0000-00000001ae02"
+        }
+    },
+    "api_version": "3.1",
+    "metadata": {
+        "last_update_time": "2020-02-14T22:40:00Z",
+        "kind": "vm",
+        "uuid": "14e109fc-c6c3-4358-8e34-f72af8e514b9",
+        "project_reference": {
+            "kind": "project",
+            "name": "default",
+            "uuid": "aaf9c30d-445d-4454-b62e-ff3c637f515a"
+        },
+        "creation_time": "2020-02-14T22:37:05Z",
+        "spec_version": 2,
+        "use_categories_mapping": true,
+        "categories_mapping": {
+            "ADGroup": [
+                "Group2"
+            ]
+        },
+        "categories": {
+            "ADGroup": "Group1"
+        },
+        "owner_reference": {
+            "kind": "user",
+            "uuid": "00000000-0000-0000-0000-000000000000",
+            "name": "admin"
+        },
+        "entity_version": "7"
+    }
+}

@@ -1,0 +1,36 @@
+---
+# ansible-dev cli tool: auto generated template for playbook
+#
+
+- hosts: localhost
+  # Include task vars
+  #vars: {}
+
+  # pre-tasks before invoking network role
+  #pre_tasks: {}
+
+  # roles to be included
+  #roles: {}
+
+  # Playbook execution starts from here
+  tasks:
+    - name: run hello world
+      debug:
+        msg: "hello world!"
+    
+    - name: run pc client
+      uri:
+        url: https://10.15.22.140:9440/api/nutanix/v3/vms/14e109fc-c6c3-4358-8e34-f72af8e514b9
+        validate_certs: false
+        user: admin
+        password: Nutanix.123
+        method: PUT
+        body: "{{ lookup('file','vm1.json') }}"
+        force_basic_auth: yes
+        body_format: json
+      register: rest_result
+
+
+  # cleanup tasks
+  #post_tasks: {}
+
