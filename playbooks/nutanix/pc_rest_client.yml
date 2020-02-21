@@ -20,15 +20,18 @@
     
     - name: run pc client
       uri:
-        url: https://10.15.22.140:9440/api/nutanix/v3/vms/14e109fc-c6c3-4358-8e34-f72af8e514b9
+        url: https://10.15.17.19:9440/api/nutanix/v3/vms/39953aa2-f4d1-45d4-a1df-f3a9ce700608
         validate_certs: false
         user: admin
         password: Nutanix.123
         method: PUT
-        body: "{{ lookup('file','vm1.json') }}"
+        body: "{{ lookup('file','vm_win_tagytay.json') }}"
         force_basic_auth: yes
         body_format: json
       register: rest_result
+
+    - name: write VM get to a file
+      copy: content="{{ rest_result["json"] }}" dest=./vm_get.json 
 
 
   # cleanup tasks

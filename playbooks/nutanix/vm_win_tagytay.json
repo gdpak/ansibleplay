@@ -1,0 +1,122 @@
+{
+  "spec": {
+    "name": "windows", 
+    "resources": {
+      "num_threads_per_core": 1, 
+      "vnuma_config": {
+        "num_vnuma_nodes": 0
+      }, 
+      "serial_port_list": [], 
+      "nic_list": [
+        {
+          "nic_type": "NORMAL_NIC", 
+          "uuid": "fb91b264-dd71-4b2a-88a3-a97cd36716df", 
+          "ip_endpoint_list": [], 
+          "vlan_mode": "ACCESS", 
+          "mac_address": "50:6b:8d:94:dd:91", 
+          "subnet_reference": {
+            "kind": "subnet", 
+            "name": "external_ipam", 
+            "uuid": "833449f3-93a3-434d-bbd7-934588b4dfea"
+          }, 
+          "is_connected": true, 
+          "trunked_vlan_list": []
+        }
+      ], 
+      "num_vcpus_per_socket": 1, 
+      "num_sockets": 2, 
+      "enable_cpu_passthrough": false, 
+      "gpu_list": [], 
+      "is_agent_vm": false, 
+      "memory_size_mib": 8192, 
+      "boot_config": {
+        "boot_device_order_list": [
+          "CDROM", 
+          "DISK", 
+          "NETWORK"
+        ], 
+        "boot_type": "LEGACY"
+      }, 
+      "hardware_clock_timezone": "UTC", 
+      "disable_branding": false, 
+      "power_state": "ON", 
+      "machine_type": "PC", 
+      "power_state_mechanism": {
+        "guest_transition_config": {
+          "should_fail_on_script_failure": false, 
+          "enable_script_exec": false
+        }, 
+        "mechanism": "HARD"
+      }, 
+      "vga_console_enabled": true, 
+      "disk_list": [
+        {
+          "device_properties": {
+            "device_type": "CDROM", 
+            "disk_address": {
+              "device_index": 0, 
+              "adapter_type": "SATA"
+            }
+          }, 
+          "uuid": "5405deb8-88cb-4b52-8b75-97f2bead9e2e"
+        }, 
+        {
+          "uuid": "8d10ca53-20b0-4b03-b0dc-0c9b9aaf174d", 
+          "disk_size_bytes": 42949672960, 
+          "storage_config": {
+            "storage_container_reference": {
+              "kind": "storage_container", 
+              "uuid": "2b9d0c97-5e05-489d-be81-39842a633069", 
+              "name": "SelfServiceContainer"
+            }
+          }, 
+          "device_properties": {
+            "device_type": "DISK", 
+            "disk_address": {
+              "device_index": 0, 
+              "adapter_type": "SCSI"
+            }
+          }, 
+          "data_source_reference": {
+            "kind": "image", 
+            "uuid": "f01e7c71-1f2e-43e5-a214-24b64ab052c1"
+          }, 
+          "disk_size_mib": 40960
+        }
+      ]
+    }, 
+    "cluster_reference": {
+      "kind": "cluster", 
+      "name": "tagaytay0304", 
+      "uuid": "00059ec4-c1ab-10a3-0000-0000000271bf"
+    }
+  }, 
+  "api_version": "3.1", 
+  "metadata": {
+    "last_update_time": "2020-02-21T03:37:12Z", 
+    "kind": "vm", 
+    "uuid": "39953aa2-f4d1-45d4-a1df-f3a9ce700608", 
+    "project_reference": {
+      "kind": "project", 
+      "name": "default", 
+      "uuid": "33fc4aef-1fdf-40ef-b0f8-6cdd77a56b69"
+    }, 
+    "creation_time": "2020-02-21T03:26:03Z", 
+    "spec_version": 2,
+    "use_categories_mapping": true,
+    "categories_mapping": {
+      "ADGroup": [
+        "Group3"
+      ]
+    }, 
+    "entity_version": "6", 
+    "owner_reference": {
+      "kind": "user", 
+      "uuid": "00000000-0000-0000-0000-000000000000", 
+      "name": "admin"
+    }, 
+    "categories": {
+      "ADGroup": "Group1"
+    }
+  }
+}
